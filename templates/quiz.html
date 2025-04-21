@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Question {{ qid + 1 }}</h2>
+<p>{{ question.question }}</p>
+<form method="POST">
+    {% for opt in question.options %}
+    <input type="radio" name="choice" value="{{ opt }}" required> {{ opt }}<br>
+    {% endfor %}
+    <input type="hidden" name="qid" value="{{ qid }}">
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}

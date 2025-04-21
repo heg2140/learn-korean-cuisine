@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Match the ingredients to the dishes</h2>
+
+<div class="container">
+  <div class="dishes">
+    <div class="dropzone" data-dish="Kimchi">Kimchi</div>
+    <div class="dropzone" data-dish="Pajeon">Pajeon</div>
+    <div class="dropzone" data-dish="Gimbap">Gimbap</div>
+  </div>
+
+  <div class="ingredients">
+    <div class="draggable" draggable="true" data-dish="Kimchi">Garlic</div>
+    <div class="draggable" draggable="true" data-dish="Pajeon">Flour</div>
+    <div class="draggable" draggable="true" data-dish="Gimbap">Seaweed</div>
+    <div class="draggable" draggable="true" data-dish="Kimchi">Fish Sauce</div>
+    <div class="draggable" draggable="true" data-dish="Gimbap">Spinach</div>
+    <div class="draggable" draggable="true" data-dish="Pajeon">Green Onions</div>
+  </div>
+</div>
+
+<p id="result"></p>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% endblock %}
