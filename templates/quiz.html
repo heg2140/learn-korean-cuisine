@@ -1,12 +1,25 @@
 {% extends "base.html" %}
+
+{% block title %}Quiz{% endblock %}
+
 {% block content %}
-<h2>Question {{ qid + 1 }}</h2>
-<p>{{ question.question }}</p>
-<form method="POST">
-    {% for opt in question.options %}
-    <input type="radio" name="choice" value="{{ opt }}" required> {{ opt }}<br>
-    {% endfor %}
-    <input type="hidden" name="qid" value="{{ qid }}">
-    <button type="submit">Submit</button>
-</form>
+<h1 class="quiz-title">Quiz</h1>
+
+<div class="quiz-container">
+    <div class="quiz-card">
+        <h2>Easy</h2>
+        <p>Match the names to the pictures.</p>
+        <a href="/quiz/easy" class="quiz-start">Start</a>
+    </div>
+    <div class="quiz-card">
+        <h2>Medium</h2>
+        <p>Match the ingredients to the names.</p>
+        <a href="/quiz/medium" class="quiz-start">Start</a>
+    </div>
+    <div class="quiz-card">
+        <h2>Hard</h2>
+        <p>Match across all categories</p>
+        <a href="/quiz/hard" class="quiz-start">Start</a>
+    </div>
+</div>
 {% endblock %}

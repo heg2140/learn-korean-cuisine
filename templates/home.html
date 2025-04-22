@@ -1,6 +1,14 @@
 {% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
 {% block content %}
-<h2>Welcome!</h2>
-<p>Ready to learn about Korean cuisine?</p>
-<a href="/quiz">Go to Quiz</a>
+<div class="home-container">
+    <h1>Welcome!</h1>
+    <p class="subtitle">Ready to learn about Korean cuisine?</p>
+    <div class="button-group">
+        <a href="/learn" class="main-button">Learn</a>
+        <a href="/quiz" class="main-button">Go to Quiz</a>
+    </div>
+</div>
 {% endblock %}
