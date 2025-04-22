@@ -1,26 +1,52 @@
 {% extends "base.html" %}
-{% block content %}
-<h2>Match the ingredients to the dishes</h2>
 
-<div class="container">
-  <div class="dishes">
-    <div class="dropzone" data-dish="Kimchi">Kimchi</div>
-    <div class="dropzone" data-dish="Pajeon">Pajeon</div>
-    <div class="dropzone" data-dish="Gimbap">Gimbap</div>
+{% block content %}
+<audio id="audio" src="{{ url_for('static', filename=item.audio) }}"></audio>
+<div class="learn-flip-card-wrapper">
+  <div class="learn-flip-card" onclick="this.classList.toggle('flipped')">
+    <div class="learn-flip-inner">
+      <!-- Front of the card -->
+      <div class="learn-flip-front">
+        <div class="learn-header">
+            <h2 class="learn-food-name">{{ item.name }}</h2>
+            <div class="learn-icons">
+              <button class="learn-icon-button" onclick="event.stopPropagation(); document.getElementById('audio').play()">
+                <i class="fa-solid fa-volume-high"></i>
+              </button>
+              <button class="learn-icon-button" onclick="event.stopPropagation();">
+                <i class="fa-solid fa-star"></i>
+              </button>
+            </div>
+        </div>
+        <img class="learn-food-image" src="{{ item.image }}" alt="{{ item.name }}">
+      </div>
+      <!-- Back of the card -->
+      <div class="learn-flip-back">
+        <h3>Ingredients</h3>
+        <ul class="ingredient-list">
+          {% for ingredient in item.ingredients %}
+            <li>{{ ingredient }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
   </div>
 
-  <div class="ingredients">
-    <div class="draggable" draggable="true" data-dish="Kimchi">Garlic</div>
-    <div class="draggable" draggable="true" data-dish="Pajeon">Flour</div>
-    <div class="draggable" draggable="true" data-dish="Gimbap">Seaweed</div>
-    <div class="draggable" draggable="true" data-dish="Kimchi">Fish Sauce</div>
-    <div class="draggable" draggable="true" data-dish="Gimbap">Spinach</div>
-    <div class="draggable" draggable="true" data-dish="Pajeon">Green Onions</div>
+
+<div class="banner-content">
+  <div class="learn-nav-arrows">
+    {% if index > 0 %}
+        <a href="{{ url_for('learn', index=index-1) }}" class="learn-arrow-button">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+    {% endif %}
+    {% if index < total - 1 %}
+        <a href="{{ url_for('learn', index=index+1) }}" class="learn-arrow-button">
+            <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    {% endif %}
   </div>
 </div>
-
-<p id="result"></p>
-
-<script src="{{ url_for('static', filename='script.js') }}"></script>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</div>
 {% endblock %}
+

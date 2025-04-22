@@ -3,12 +3,20 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div class="home-container">
-    <h1>Welcome!</h1>
-    <p class="subtitle">Ready to learn about Korean cuisine?</p>
-    <div class="button-group">
-        <a href="/learn" class="main-button">Learn</a>
-        <a href="/quiz" class="main-button">Go to Quiz</a>
+<div class="row justify-content-center">
+    <div class="banner-content col-lg-12">
+        <h1 class="banner-text">Welcome!</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="banner-content col-lg-12">
+        <p class="banner-description">Ready to learn about Korean cuisine?</p>
+    </div>
+</div>
+<div class="container-fluid homepage-container">
+    <div class="d-flex justify-content-center gap-4 flex-wrap">
+        <a href="/learn" class="btn welcome-button">Learn</a>
+        <a href="/quiz" class="btn welcome-button">Go to Quiz</a>
     </div>
 </div>
 {% endblock %}

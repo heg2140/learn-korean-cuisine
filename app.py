@@ -32,7 +32,7 @@ items = [
     },
     {
         "name": "Gimbap",
-        "audio": "audio/gimbap.mp3",
+        "audio": "audio/kimbap.mp3",
         "ingredients": [
             "1. Rice",
             "2. Seaweed",
@@ -106,9 +106,16 @@ questions = [
 def home():
     return render_template("home.html")
 
+@app.route('/learn/<int:index>')
+def learn(index):
+    if 0 <= index < len(items):
+        item = items[index]
+        return render_template('learn.html', item=item, index=index, total=len(items))
+    return redirect('/learn/0')
+
 @app.route('/learn')
-def learn():
-    return render_template("learn.html")
+def learn_redirect():
+    return redirect('/learn/0')
 
 @app.route('/quiz', methods=["GET", "POST"])
 def quiz():
