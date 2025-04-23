@@ -165,7 +165,7 @@ input[type="radio"] {
     width: 50%;
     padding-top: 23px;
     max-width: 200px;
-    height: 60px;
+    height: 55px;
     font-size: 20pt;
     border-radius: 30px;
     background-color: rgb(8,76,172);
@@ -180,12 +180,13 @@ input[type="radio"] {
     text-align: center;
 }
 .banner-description {
-    font-size: 18px;
+    color: rgb(201, 199, 199);
+    font-size: 20px;
     margin-top: -20px;
     margin-bottom:80px;
 }
 .banner-text {
-    color: black;
+    color: #3b3b3b;
     font-size: 60px;
     font-weight: bold;
     margin-top: 80px;
@@ -198,6 +199,7 @@ input[type="radio"] {
 }
 
 .learn-food-name {
+    color: #3b3b3b;
     font-size: 1.5rem;
     margin: 0;
 }
@@ -207,13 +209,32 @@ input[type="radio"] {
     gap: 1rem;
 }
 
+.learn-listen-button {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: #3b3b3b;
+}
+
 .learn-icon-button {
     background: none;
     border: none;
     font-size: 1.25rem;
     cursor: pointer;
-    color: #333;
+    color: #3b3b3b;
 }
+
+.learn-icon-button i {
+    color: lightgray;
+    text-shadow: 0 0 0 1px 343434; 
+    transition: color 0.3s;
+}
+  
+.learn-icon-button.favorited i {
+    color: gold;
+    text-shadow: none;
+  }
 
 .learn-food-image {
     margin-top: 1.5rem;
@@ -233,7 +254,7 @@ input[type="radio"] {
     border: none;
     font-size: 2rem;
     cursor: pointer;
-    color: #333;
+    color: #3b3b3b;
 }
 .learn-flip-card {
     width: 100%;
@@ -257,6 +278,7 @@ input[type="radio"] {
 
 .learn-flip-front, .learn-flip-back {
     position: absolute;
+    height: 350px;
     max-width: 600px;
     width: 90%;
     backface-visibility: hidden;
@@ -288,6 +310,10 @@ input[type="radio"] {
     padding-left: 1.5rem;
     font-size: 1rem;
     line-height: 1.8;
+    color: #3b3b3b
+}
+.text-dark{
+    color: #3b3b3b
 }
 .learn-flip-card-wrapper {
     display: flex;
@@ -415,3 +441,55 @@ input[type="radio"] {
 
 .combo-columns ol {
     text-align: left;
+
+.pop-quiz-question {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.pop-quiz-question h3 {
+    font-size: 1.3rem;
+    margin-bottom: 3rem;
+}
+
+.pop-quiz-option {
+    font-size: 1rem;
+    display: inline-block;
+    margin: 0.5rem 0;
+    color: #3b3b3b
+}
+
+.pop-quiz-submit-button {
+    margin-top: 2rem;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    background-color: #1946ba;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pop-quiz-submit-button:hover {
+    background-color: #143a96;
+}
+.pop-quiz-incorrect-button {
+    padding: .5rem 1.5rem;
+    font-size: 1rem;
+    background-color: #1946ba;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+#incorrect{
+    color: red; font-weight: bold; margin-top: 2rem;
+}
+#correct{
+    color: green; font-weight: bold; margin-top: 1rem;
+}
+.incorrect-buttons{
+    display: flex; gap: 1rem; justify-content: center; margin-top: -0.7rem;
+}

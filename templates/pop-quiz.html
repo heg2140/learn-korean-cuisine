@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="learn-flip-card-wrapper">
+    <div class="learn-flip-card">
+      <div class="learn-flip-inner">
+        <div class="learn-flip-front">
+          <div class="pop-quiz-question">
+            <h3 class="text-dark">{{ item.question }}</h3>
+  
+            <form method="POST" action="{{ url_for('pop_quiz_result', index=index) }}">
+              {% for option in item.options %}
+                <label class="pop-quiz-option">
+                  <input type="radio" name="answer" value="{{ option }}"
+                    {% if selected == option %}checked{% endif %}
+                    {% if is_correct is defined %}disabled{% endif %}>
+                  {{ option }}
+                </label><br>
+              {% endfor %}
+  
+              {% if is_correct is not defined %}
+                <button type="submit" class="pop-quiz-submit-button">Submit</button>
+              {% elif is_correct %}
+                <p style="color: green; font-weight: bold; margin-top: 1rem;">Correct!</p>
+                {% if is_last %}
+                  <a href="{{ url_for('final_quiz') }}" class="pop-quiz-submit-button">Go to Quiz</a>
+                {% else %}
+                  <a href="{{ url_for('learn', index=index+1) }}" class="pop-quiz-submit-button">Next</a>
+                {% endif %}
+              {% else %}
+                <p style="color: red; font-weight: bold; margin-top: 1rem;">Incorrect</p>
+                <div class="incorrect-buttons">
+                  <a href="{{ url_for('learn', index=index-1) }}" class="pop-quiz-submit-button">Relearn</a>
+                  <a href="{{ url_for('learn', index=index) }}" class="pop-quiz-submit-button">Try Again</a>
+                </div>
+              {% endif %}
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="banner-content">
+        <div class="learn-nav-arrows">
+          {% if index > 0 %}
+              <a href="{{ url_for('learn', index=index-1) }}" class="learn-arrow-button">
+                  <i class="fa-solid fa-arrow-left"></i>
+              </a>
+          {% endif %}
+          {% if index < total - 1 %}
+              <a href="{{ url_for('learn', index=index+1) }}" class="learn-arrow-button">
+                  <i class="fa-solid fa-arrow-right"></i>
+              </a>
+          {% endif %}
+        </div>
+      </div>
+</div>
+{% endblock %}

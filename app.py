@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, flash, url_for
 
 app = Flask(__name__)
+app.secret_key = 'some_secret_key'
 
 items = [
     {
+        "type": "flashcard",
         "name": "Kimchi",
         "audio": "audio/kimchi.mp3",
         "ingredients": [
@@ -18,6 +20,13 @@ items = [
         "image": "https://english.visitkorea.or.kr/public/images/foodtrip/k-food-img/img_kfood_view_374.jpg"
     },
     {
+        "type": "quiz",
+        "question": "Which of the following is NOT in Kimchi?",
+        "options": ["Ginger", "Fish sauce", "Korean Chili Paste"],
+        "answer": "Korean Chili Paste"
+    },
+    {
+        "type": "flashcard",
         "name": "Pajeon",
         "audio": "audio/pajeon.mp3",
         "ingredients": [
@@ -31,6 +40,13 @@ items = [
         "image": "https://english.visitkorea.or.kr/public/images/foodtrip/k-food-img/img_kfood_view_200.jpg"
     },
     {
+        "type": "quiz",
+        "question": "Which of the following is in Pajeon?",
+        "options": ["Radish", "Sugar", "Fish sauce"],
+        "answer": "Sugar"
+    },
+    {
+        "type": "flashcard",
         "name": "Gimbap",
         "audio": "audio/kimbap.mp3",
         "ingredients": [
@@ -45,6 +61,13 @@ items = [
         "image": "https://english.visitkorea.or.kr/public/images/foodtrip/k-food-img/img_kfood_view_183.jpg"
     },
     {
+        "type": "quiz",
+        "question": "Which of the following is NOT in Gimbap?",
+        "options": ["Radish", "Sesame oil", "Garlic"],
+        "answer": "Garlic"
+    },
+    {
+        "type": "flashcard",
         "name": "Japchae",
         "audio": "audio/japchae.mp3",
         "ingredients": [
@@ -59,6 +82,13 @@ items = [
         "image": "https://english.visitkorea.or.kr/public/images/foodtrip/k-food-img/img_kfood_view_363.jpg"
     },
     {
+        "type": "quiz",
+        "question": "Which of the following is in Japchae?",
+        "options": ["Spinach", "Pork", "Ginger"],
+        "answer": "Spinach"
+    },
+    {
+        "type": "flashcard",
         "name": "Bulgogi",
         "audio": "audio/bulgogi.mp3",
         "ingredients": [
@@ -71,31 +101,9 @@ items = [
             "7. Sesame Seeds"
         ],
         "image": "https://english.visitkorea.or.kr/public/images/foodtrip/k-food-img/img_kfood_view_106.jpg"
-    } 
-]
-
-questions = [
-    {
-        "question": "Which of the following is NOT in Kimchi?",
-        "options": ["Ginger", "Fish sauce", "Korean Chili Paste"],
-        "answer": "Korean Chili Paste"
     },
     {
-        "question": "Which of the following is in Pajeon?",
-        "options": ["Radish", "Sugar", "Fish sauce"],
-        "answer": "Sugar"
-    },
-    {
-        "question": "Which of the following is NOT in Gimbap?",
-        "options": ["Radish", "Sesame oil", "Garlic"],
-        "answer": "Garlic"
-    },
-    {
-        "question": "Which of the following is in Japchae?",
-        "options": ["Spinach", "Pork", "Ginger"],
-        "answer": "Spinach"
-    },
-    {
+        "type": "quiz",
         "question": "Which of the following is NOT in Bulgogi?",
         "options": ["Soy Sauce", "Rice Flour", "Sesame Seeds"],
         "answer": "Rice Flour"
@@ -110,14 +118,32 @@ def home():
 def learn(index):
     if 0 <= index < len(items):
         item = items[index]
-        return render_template('learn.html', item=item, index=index, total=len(items))
+        template = 'learn.html' if item['type'] == 'flashcard' else 'pop-quiz.html'
+        return render_template(template, item=item, index=index, total=len(items))
     return redirect('/learn/0')
 
 @app.route('/learn')
 def learn_redirect():
     return redirect('/learn/0')
 
-@app.route('/quiz', methods=["GET", "POST"])
+@app.route('/pop-quiz-result/<int:index>', methods=['POST'])
+def pop_quiz_result(index):
+    selected = request.form.get("answer")
+    correct = items[index]["answer"]
+    is_correct = selected == correct
+    is_last = index == len(items) - 1  
+
+    return render_template(
+        'pop-quiz.html',
+        item=items[index],
+        index=index,
+        total=len(items),
+        selected=selected,
+        is_correct=is_correct,
+        is_last=is_last
+    )
+
+@app.route('/quiz')
 def quiz():
     if request.method == "POST":
         qid = int(request.form["qid"])
