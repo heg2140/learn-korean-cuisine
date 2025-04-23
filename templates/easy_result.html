@@ -10,3 +10,6 @@
     <a href="/quiz/medium" class="main-button">Go to Medium Quiz</a>
 </div>
 {% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/results.js') }}"></script>
+{% endblock %}

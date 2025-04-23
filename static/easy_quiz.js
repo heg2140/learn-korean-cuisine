@@ -1,7 +1,6 @@
 let correctCount = 0;
 let missedCount = 0;
 let draggedItem = null;
-
 document.querySelectorAll('.draggable').forEach(item => {
     item.addEventListener('dragstart', (e) => {
         draggedItem = e.target;
@@ -45,8 +44,15 @@ setInterval(() => {
 
 function checkCompletion() {
     if (correctCount === 3) {
-        setTimeout(() => {
-            window.location.href = "/quiz/easy/result";
-        }, 500); // slight delay to show the final match
+      // ✅ ADD THIS HERE to save data
+      const time = document.getElementById("timer").textContent;
+      localStorage.setItem("easyQuizTime", time);
+      localStorage.setItem("easyQuizMissed", missedCount);
+      console.log("Saving to localStorage:", time, missedCount);
+  
+      // Then go to the results page
+      setTimeout(() => {
+        window.location.href = "/quiz/easy/result";
+      }, 500);
     }
-}
+  }

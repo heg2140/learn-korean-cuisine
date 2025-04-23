@@ -145,16 +145,7 @@ def pop_quiz_result(index):
 
 @app.route('/quiz')
 def quiz():
-    if request.method == "POST":
-        qid = int(request.form["qid"])
-        selected = request.form["choice"]
-        correct = questions[qid]["answer"]
-        return render_template("result.html", correct=correct, selected=selected, qid=qid)
-    else:
-        qid = int(request.args.get("qid", 0))
-        if qid >= len(questions):
-            return render_template("result.html", final=True)
-        return render_template("quiz.html", question=questions[qid], qid=qid)
+    return render_template('quiz.html')
     
 @app.route('/quiz/easy')
 def easy_quiz():

@@ -23,7 +23,7 @@
               {% elif is_correct %}
                 <p style="color: green; font-weight: bold; margin-top: 1rem;">Correct!</p>
                 {% if is_last %}
-                  <a href="{{ url_for('final_quiz') }}" class="pop-quiz-submit-button">Go to Quiz</a>
+                  <a href="{{ url_for('quiz') }}" class="pop-quiz-submit-button">Go to Quiz</a>
                 {% else %}
                   <a href="{{ url_for('learn', index=index+1) }}" class="pop-quiz-submit-button">Next</a>
                 {% endif %}
