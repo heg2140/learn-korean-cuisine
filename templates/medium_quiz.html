@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Medium Quiz{% endblock %}
+
+{% block content %}
+<div class="quiz-header">
+    <div>Correct: <span id="correct">0</span></div>
+    <div>Missed: <span id="missed">0</span></div>
+    <div><span id="timer">0:00</span></div>
+</div>
+
+<div class="quiz-area">
+    <div class="labels">
+        <div class="draggable" draggable="true" id="Pajeon">Pajeon</div>
+        <div class="draggable" draggable="true" id="Gimbap">Gimbap</div>
+        <div class="draggable" draggable="true" id="Kimchi">Kimchi</div>
+    </div>
+
+    <div class="ingredients">
+        <div class="dropzone" data-answer="Gimbap">
+            <ol>
+                <li>Rice</li>
+                <li>Seaweed</li>
+                <li>Carrot</li>
+                <li>Spinach</li>
+                <li>Fish Sauce</li>
+                <li>Pickled Radish</li>
+                <li>Sesame Oil</li>
+            </ol>
+        </div>
+        <div class="dropzone" data-answer="Pajeon">
+            <ol>
+                <li>Green Onions</li>
+                <li>Flour</li>
+                <li>Water</li>
+                <li>Soybean paste</li>
+                <li>Sugar</li>
+                <li>Vegetable oil</li>
+            </ol>
+        </div>
+        <div class="dropzone" data-answer="Kimchi">
+            <ol>
+                <li>Brined Napa Cabbage</li>
+                <li>Daikon Radish</li>
+                <li>Korean Chili Powder</li>
+                <li>Rice Flour</li>
+                <li>Fish Sauce</li>
+                <li>Garlic</li>
+                <li>Ginger</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<a href="{{ url_for('quiz') }}" class="back-button">← Back</a>
+
+<script src="{{ url_for('static', filename='medium_quiz.js') }}"></script>
+{% endblock %}

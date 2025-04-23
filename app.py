@@ -129,6 +129,32 @@ def quiz():
         if qid >= len(questions):
             return render_template("result.html", final=True)
         return render_template("quiz.html", question=questions[qid], qid=qid)
+    
+@app.route('/quiz/easy')
+def easy_quiz():
+    return render_template('easy_quiz.html')
+
+@app.route('/quiz/easy/result')
+def easy_quiz_result():
+    return render_template('easy_result.html')
+
+@app.route('/quiz/medium')
+def medium_quiz():
+    return render_template('medium_quiz.html')
+
+@app.route('/quiz/medium/result')
+def medium_quiz_result():
+    return render_template('medium_result.html')
+
+@app.route('/quiz/hard')
+def hard_quiz():
+    return render_template('hard_quiz.html')
+
+@app.route('/quiz/hard/result')
+def hard_quiz_result():
+    return render_template('hard_result.html')
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

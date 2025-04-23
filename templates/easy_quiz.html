@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Easy Quiz{% endblock %}
+
+{% block content %}
+<div class="quiz-header">
+    <div>Correct: <span id="correct">0</span></div>
+    <div>Missed: <span id="missed">0</span></div>
+    <div><span id="timer">0:00</span></div>
+</div>
+
+<div class="quiz-area">
+    <div class="labels">
+        <div class="draggable" draggable="true" id="Pajeon">Pajeon</div>
+        <div class="draggable" draggable="true" id="Gimbap">Gimbap</div>
+        <div class="draggable" draggable="true" id="Kimchi">Kimchi</div>
+    </div>
+
+    <div class="images">
+        <div class="dropzone" data-answer="Gimbap">
+            <img src="{{ url_for('static', filename='images/gimbap.jpg') }}" alt="Gimbap">
+        </div>
+        <div class="dropzone" data-answer="Pajeon">
+            <img src="{{ url_for('static', filename='images/pajeon.jpg') }}" alt="Pajeon">
+        </div>
+        <div class="dropzone" data-answer="Kimchi">
+            <img src="{{ url_for('static', filename='images/kimchi.jpg') }}" alt="Kimchi">
+        </div>
+    </div>
+</div>
+
+<a href="{{ url_for('quiz') }}" class="back-button">← Back</a>
+
+<script src="{{ url_for('static', filename='easy_quiz.js') }}"></script>
+{% endblock %}
