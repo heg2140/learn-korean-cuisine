@@ -20,3 +20,6 @@ document.querySelectorAll('.draggable').forEach(el => {
     });
   });
   
+  function toggleStar(button) {
+    button.classList.toggle("favorited");
+  }

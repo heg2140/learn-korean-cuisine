@@ -10,10 +10,10 @@
         <div class="learn-header">
             <h2 class="learn-food-name">{{ item.name }}</h2>
             <div class="learn-icons">
-              <button class="learn-icon-button" onclick="event.stopPropagation(); document.getElementById('audio').play()">
+              <button class="learn-listen-button" onclick="event.stopPropagation(); document.getElementById('audio').play()">
                 <i class="fa-solid fa-volume-high"></i>
               </button>
-              <button class="learn-icon-button" onclick="event.stopPropagation();">
+              <button class="learn-icon-button" onclick="event.stopPropagation(); toggleStar(this);">
                 <i class="fa-solid fa-star"></i>
               </button>
             </div>
@@ -22,7 +22,7 @@
       </div>
       <!-- Back of the card -->
       <div class="learn-flip-back">
-        <h3>Ingredients</h3>
+        <h3 class="text-dark">Ingredients</h3>
         <ul class="ingredient-list">
           {% for ingredient in item.ingredients %}
             <li>{{ ingredient }}</li>
