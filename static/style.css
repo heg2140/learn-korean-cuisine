@@ -183,13 +183,19 @@ input[type="radio"] {
     color: rgb(201, 199, 199);
     font-size: 20px;
     margin-top: -20px;
-    margin-bottom:80px;
+    margin-bottom:70px;
+}
+.welcome-text {
+    color: #3b3b3b;
+    font-size: 30px;
+    margin-top: 80px;
+
 }
 .banner-text {
-    color: #3b3b3b;
-    font-size: 60px;
+    color: red;
+    font-size: 65px;
     font-weight: bold;
-    margin-top: 80px;
+    margin-top: -14px;
 }
 
 .learn-header {
