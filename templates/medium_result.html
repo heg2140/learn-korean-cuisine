@@ -6,6 +6,8 @@
 <div class="result-container">
     <h1>Well done!</h1>
     <p>You finished the Medium Quiz 🎉</p>
+    <p>Time Taken: {{ time_taken }}</p>
+    <p>Missed: {{ misses }}</p>
     <a href="{{ url_for('quiz') }}" class="main-button">Back to Quiz Menu</a>
 </div>
 {% endblock %}

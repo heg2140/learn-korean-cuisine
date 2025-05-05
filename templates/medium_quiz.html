@@ -1,12 +1,17 @@
+
 {% extends "base.html" %}
 
 {% block title %}Medium Quiz{% endblock %}
 
 {% block content %}
 <div class="quiz-header">
-    <div>Correct: <span id="correct">0</span></div>
-    <div>Missed: <span id="missed">0</span></div>
-    <div><span id="timer">0:00</span></div>
+    <div class="score-container">
+        <div>Correct: <span id="correct">0</span></div>
+        <div class="missed">Missed: <span id="missed">0</span></div>
+    </div>
+    <div class="timer-container">
+        <span id="timer">1:00</span>
+    </div>
 </div>
 
 <div class="quiz-area">
@@ -14,6 +19,8 @@
         <div class="draggable" draggable="true" id="Pajeon">Pajeon</div>
         <div class="draggable" draggable="true" id="Gimbap">Gimbap</div>
         <div class="draggable" draggable="true" id="Kimchi">Kimchi</div>
+        <div class="draggable" draggable="true" id="Japchae">Japchae</div>
+        <div class="draggable" draggable="true" id="Bulgogi">Bulgogi</div>
     </div>
 
     <div class="ingredients">
@@ -33,9 +40,9 @@
                 <li>Green Onions</li>
                 <li>Flour</li>
                 <li>Water</li>
-                <li>Soybean paste</li>
+                <li>Soybean Paste</li>
                 <li>Sugar</li>
-                <li>Vegetable oil</li>
+                <li>Vegetable Oil</li>
             </ol>
         </div>
         <div class="dropzone" data-answer="Kimchi">
@@ -47,6 +54,28 @@
                 <li>Fish Sauce</li>
                 <li>Garlic</li>
                 <li>Ginger</li>
+            </ol>
+        </div>
+        <div class="dropzone" data-answer="Japchae">
+            <ol>
+                <li>Sweet Potato Starch Noodles</li>
+                <li>Beef</li>
+                <li>Carrot</li>
+                <li>Spinach</li>
+                <li>Onion</li>
+                <li>Bell Pepper</li>
+                <li>Shiitake Mushroom</li>
+            </ol>
+        </div>
+        <div class="dropzone" data-answer="Bulgogi">
+            <ol>
+                <li>Beef</li>
+                <li>Garlic</li>
+                <li>Green Onion</li>
+                <li>Soy Sauce</li>
+                <li>Sugar</li>
+                <li>Sesame Oil</li>
+                <li>Sesame Seeds</li>
             </ol>
         </div>
     </div>

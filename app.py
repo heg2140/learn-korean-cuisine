@@ -151,9 +151,12 @@ def quiz():
 def easy_quiz():
     return render_template('easy_quiz.html')
 
-@app.route('/quiz/easy/result')
-def easy_quiz_result():
-    return render_template('easy_result.html')
+@app.route("/quiz/easy/results")
+def easy_quiz_results():
+    time_taken = request.args.get("time")
+    misses = request.args.get("misses", 0)
+    return render_template("easy_result.html", time_taken=time_taken, misses=misses)
+
 
 @app.route('/quiz/medium')
 def medium_quiz():
@@ -161,7 +164,10 @@ def medium_quiz():
 
 @app.route('/quiz/medium/result')
 def medium_quiz_result():
-    return render_template('medium_result.html')
+    time_taken = request.args.get("time", "1:00")
+    misses = request.args.get("misses", 0)
+    return render_template("medium_result.html", time_taken=time_taken, misses=misses)
+
 
 @app.route('/quiz/hard')
 def hard_quiz():

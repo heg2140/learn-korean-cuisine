@@ -4,9 +4,13 @@
 
 {% block content %}
 <div class="quiz-header">
-    <div>Correct: <span id="correct">0</span></div>
-    <div>Missed: <span id="missed">0</span></div>
-    <div><span id="timer">0:00</span></div>
+    <div class="score-container">
+        <div>Correct: <span id="correct">0</span></div>
+        <div class="missed">Missed: <span id="missed">0</span></div>
+    </div>
+    <div class="timer-container">
+        <span id="timer">1:00</span>
+    </div>
 </div>
 
 <div class="quiz-area">
@@ -14,6 +18,8 @@
         <div class="draggable" draggable="true" id="Pajeon">Pajeon</div>
         <div class="draggable" draggable="true" id="Gimbap">Gimbap</div>
         <div class="draggable" draggable="true" id="Kimchi">Kimchi</div>
+        <div class="draggable" draggable="true" id="Bulgogi">Bulgogi</div>
+        <div class="draggable" draggable="true" id="Japchae">Japchae</div>
     </div>
 
     <div class="images">
@@ -25,6 +31,12 @@
         </div>
         <div class="dropzone" data-answer="Kimchi">
             <img src="{{ url_for('static', filename='images/kimchi.jpg') }}" alt="Kimchi">
+        </div>
+        <div class="dropzone" data-answer="Bulgogi">
+            <img src="{{ url_for('static', filename='images/bulgogi.jpg') }}" alt="Bulgogi">
+        </div>
+        <div class="dropzone" data-answer="Japchae">
+            <img src="{{ url_for('static', filename='images/japchae.jpg') }}" alt="Japchae">
         </div>
     </div>
 </div>
