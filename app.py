@@ -168,14 +168,15 @@ def medium_quiz_result():
     misses = request.args.get("misses", 0)
     return render_template("medium_result.html", time_taken=time_taken, misses=misses)
 
-
 @app.route('/quiz/hard')
 def hard_quiz():
     return render_template('hard_quiz.html')
 
 @app.route('/quiz/hard/result')
 def hard_quiz_result():
-    return render_template('hard_result.html')
+    time_taken = request.args.get("time", "1:00")
+    misses = request.args.get("misses", 0)
+    return render_template("hard_result.html", time_taken=time_taken, misses=misses)
 
 
 

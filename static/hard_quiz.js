@@ -1,6 +1,9 @@
 let correctCount = 0;
 let missedCount = 0;
 let draggedItem = null;
+const totalQuestions = 5;
+let timeLeft = 60;
+const timerElement = document.getElementById("timer");
 
 document.querySelectorAll('.draggable').forEach(item => {
     item.addEventListener('dragstart', (e) => {
@@ -9,12 +12,13 @@ document.querySelectorAll('.draggable').forEach(item => {
 });
 
 document.querySelectorAll('.dropzone').forEach(zone => {
-    zone.addEventListener('dragover', (e) => e.preventDefault());
+    zone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+    });
 
     zone.addEventListener('drop', (e) => {
         e.preventDefault();
         const correctAnswer = zone.dataset.answer;
-
         if (draggedItem.id === correctAnswer) {
             zone.appendChild(draggedItem);
             correctCount++;
@@ -27,18 +31,35 @@ document.querySelectorAll('.dropzone').forEach(zone => {
         document.getElementById("correct").textContent = correctCount;
         document.getElementById("missed").textContent = missedCount;
 
-        if (correctCount === 3) {
-            setTimeout(() => {
-                window.location.href = "/quiz/hard/result";
-            }, 500);
-        }
+        checkCompletion();
     });
 });
 
-let startTime = Date.now();
-setInterval(() => {
-    const elapsed = Math.floor((Date.now() - startTime) / 1000);
-    const min = Math.floor(elapsed / 60);
-    const sec = elapsed % 60;
-    document.getElementById("timer").textContent = `${min}:${sec.toString().padStart(2, '0')}`;
-}, 1000);
+function updateTimer() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+    if (timeLeft > 0) {
+        timeLeft--;
+    } else {
+        clearInterval(timerInterval);
+        endQuiz();
+    }
+}
+
+const timerInterval = setInterval(updateTimer, 1000);
+
+function endQuiz() {
+    missedCount += totalQuestions - correctCount;
+    const timeTaken = "1:00";
+    window.location.href = `/quiz/hard/result?time=${encodeURIComponent(timeTaken)}&misses=${missedCount}`;
+}
+
+function checkCompletion() {
+    if (correctCount === totalQuestions) {
+        clearInterval(timerInterval);
+        const timeTaken = document.getElementById("timer").textContent;
+        window.location.href = `/quiz/hard/result?time=${encodeURIComponent(timeTaken)}&misses=${missedCount}`;
+    }
+}
