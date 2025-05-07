@@ -77,7 +77,7 @@ const timerInterval = setInterval(updateTimer, 1000);
 function endQuiz() {
     missedCount += totalQuestions - correctCount;
     const timeTaken = "1:00";
-    window.location.href = `/quiz/medium/result?time=${encodeURIComponent(timeTaken)}&misses=${missedCount}`;
+    window.location.href = `/quiz/medium/failed?time=${encodeURIComponent(timeTaken)}&misses=${missedCount}`;
 }
 
 function checkCompletion() {

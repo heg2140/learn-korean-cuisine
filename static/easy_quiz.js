@@ -83,7 +83,7 @@ function endQuiz() {
     localStorage.setItem("easyQuizMissed", missedCount);
 
     // Redirect with query parameters
-    window.location.href = `/quiz/easy/result?time=${encodeURIComponent(time)}&misses=${missedCount}`;
+    window.location.href = `/quiz/easy/failed?time=${encodeURIComponent(time)}&misses=${missedCount}`;
 }
 
 function checkCompletion() {

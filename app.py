@@ -181,6 +181,12 @@ def easy_quiz_results():
 
     return render_template("easy_result.html", time_taken=time_taken, misses=misses)
 
+@app.route('/quiz/easy/failed')
+def easy_quiz_failed():
+    time_taken = request.args.get("time", "1:00")
+    misses = request.args.get("misses", "0")
+    return render_template("failed_quiz.html", time_taken=time_taken, misses=misses)
+
 
 @app.route('/quiz/medium')
 def medium_quiz():
@@ -210,6 +216,12 @@ def medium_quiz_result():
         time_taken = 60  # fallback if something goes wrong
 
     return render_template("medium_result.html", time_taken=time_taken, misses=misses)
+
+@app.route('/quiz/medium/failed')
+def medium_quiz_failed():
+    time_taken = request.args.get("time", "1:00")
+    misses = request.args.get("misses", "0")
+    return render_template("failed_quiz.html", time_taken=time_taken, misses=misses)
 
 @app.route('/quiz/hard')
 def hard_quiz():
@@ -272,7 +284,11 @@ def hard_quiz_result():
     misses = request.args.get("misses", 0)
     return render_template("hard_result.html", time_taken=time_taken, misses=misses)
 
-
+@app.route('/quiz/hard/failed')
+def hard_quiz_failed():
+    time_taken = request.args.get("time", "1:00")
+    misses = request.args.get("misses", "0")
+    return render_template("failed_quiz.html", time_taken=time_taken, misses=misses)
 
 if __name__ == '__main__':
     app.run(debug=True)

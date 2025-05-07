@@ -84,9 +84,9 @@ function checkCompletion() {
 
 // End quiz early
 function endQuiz() {
-    missedCount += totalQuestions - correctCount;
+    missedCount = 5;
     const timeTaken = document.getElementById("timer").textContent;
-    window.location.href = `/quiz/hard/result?time=${encodeURIComponent(timeTaken)}&misses=${missedCount}`;
+    window.location.href = `/quiz/hard/failed?time=${encodeURIComponent(timeTaken)}&misses=${missedCount}`;
 }
 
 // Play audio on click
