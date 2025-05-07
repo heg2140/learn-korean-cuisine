@@ -17,29 +17,23 @@
 
 <div class="final-quiz-grid">
     {% for card in cards %}
-        {% if loop.index0 < (cards|length // 2) %}
-            <!-- Draggable card only -->
-            <div class="card draggable" draggable="true" data-match-id="{{ card.match_id }}" data-type="{{ card.type }}">
-        {% else %}
-            <!-- Dropzone card only -->
-            <div class="card dropzone" data-match-id="{{ card.match_id }}" data-type="{{ card.type }}">
-        {% endif %}
-
+        <div class="card 
+            {% if card.role == 'draggable' %}draggable{% else %}dropzone{% endif %}" 
+            {% if card.role == 'draggable' %}draggable="true"{% endif %}
+            data-match-id="{{ card.match_id }}" 
+            data-type="{{ card.type }}">
+            
             {% if card.type == "name" %}
                 <p>{{ card.content }}</p>
-
             {% elif card.type == "image" %}
                 <img src="{{ card.content }}" alt="Dish Image">
-
             {% elif card.type == "audio" %}
-                <!-- Use per-card scoped audio + button -->
                 <audio class="hidden-audio">
                     <source src="{{ url_for('static', filename=card.content) }}" type="audio/mpeg">
                 </audio>
-                <button draggable="false" class="learn-listen-button" onclick="playCardAudio(this)">
+                <button draggable="false" class="learn-listen-button" onclick="playCardAudio(this, event)">
                     <i class="fa-solid fa-volume-high"></i>
                 </button>
-
             {% elif card.type == "ingredients" %}
                 <ul>
                     {% for ing in card.content %}
@@ -50,6 +44,7 @@
         </div>
     {% endfor %}
 </div>
+
 
 <a href="{{ url_for('quiz') }}" class="back-button">← Back</a>
 

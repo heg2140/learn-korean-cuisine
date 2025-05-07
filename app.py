@@ -219,32 +219,52 @@ def hard_quiz():
     representations = []
 
     for card in selected:
-        # Create a unique ID to pair these two representations
         match_id = str(uuid.uuid4())
 
-        # Choose 2 random types to represent this dish
+        # Randomly assign roles
         types = ["name", "image", "audio", "ingredients"]
         chosen_types = random.sample(types, 2)
+        draggable_type = chosen_types[0]
+        dropzone_type = chosen_types[1]
 
-        for typ in chosen_types:
-            if typ == "name":
-                content = card["name"]
-            elif typ == "image":
-                content = card["image"]
-            elif typ == "audio":
-                content = card["audio"]
-            elif typ == "ingredients":
-                content = card["ingredients"]
+        # Draggable representation
+        if draggable_type == "name":
+            draggable_content = card["name"]
+        elif draggable_type == "image":
+            draggable_content = card["image"]
+        elif draggable_type == "audio":
+            draggable_content = card["audio"]
+        elif draggable_type == "ingredients":
+            draggable_content = card["ingredients"]
 
-            representations.append({
-                "type": typ,
-                "content": content,
-                "match_id": match_id
-            })
+        # Dropzone representation
+        if dropzone_type == "name":
+            dropzone_content = card["name"]
+        elif dropzone_type == "image":
+            dropzone_content = card["image"]
+        elif dropzone_type == "audio":
+            dropzone_content = card["audio"]
+        elif dropzone_type == "ingredients":
+            dropzone_content = card["ingredients"]
+
+        representations.append({
+            "role": "draggable",
+            "type": draggable_type,
+            "content": draggable_content,
+            "match_id": match_id
+        })
+
+        representations.append({
+            "role": "dropzone",
+            "type": dropzone_type,
+            "content": dropzone_content,
+            "match_id": match_id
+        })
 
     random.shuffle(representations)
 
     return render_template("hard_quiz.html", cards=representations)
+
 
 @app.route('/quiz/hard/result')
 def hard_quiz_result():
