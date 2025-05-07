@@ -23,8 +23,27 @@ document.querySelectorAll('.dropzone').forEach(zone => {
             correctCount++;
             draggedItem.setAttribute("draggable", "false");
             draggedItem.style.cursor = "default";
+            zone.classList.add('matched');
+            draggedItem.classList.add('matched');
         } else {
             missedCount++;
+            // Add red highlight
+            zone.classList.add("incorrect");
+            draggedItem.classList.add("incorrect", "shake");
+
+            // Return the item to its original container
+            const originalContainer = document.getElementById(`container-${draggedItem.id}`);
+            originalContainer.appendChild(draggedItem);
+
+            // Optional: disable drag temporarily to prevent spam-drop
+            draggedItem.setAttribute("draggable", "false");
+
+            // Remove highlight after short delay
+            setTimeout(() => {
+                zone.classList.remove("incorrect");
+                draggedItem.classList.remove("incorrect", "shake");
+                draggedItem.setAttribute("draggable", "true");
+            }, 500);
         }
 
         document.getElementById("correct").textContent = correctCount;
@@ -58,19 +77,26 @@ function endQuiz() {
     missedCount = 5;
     document.getElementById("missed").textContent = missedCount;
     const time = document.getElementById("timer").textContent;
+
+    // Save to localStorage (optional)
     localStorage.setItem("easyQuizTime", time);
     localStorage.setItem("easyQuizMissed", missedCount);
-    window.location.href = "/quiz/easy/result";
+
+    // Redirect with query parameters
+    window.location.href = `/quiz/easy/result?time=${encodeURIComponent(time)}&misses=${missedCount}`;
 }
 
-// Check if quiz is complete
 function checkCompletion() {
     if (correctCount === 5) {
         const time = document.getElementById("timer").textContent;
+
+        // Save to localStorage (optional)
         localStorage.setItem("easyQuizTime", time);
         localStorage.setItem("easyQuizMissed", missedCount);
+
+        // Delay before redirect
         setTimeout(() => {
-            window.location.href = "/quiz/easy/result";
+            window.location.href = `/quiz/easy/result?time=${encodeURIComponent(time)}&misses=${missedCount}`;
         }, 500);
     }
 }

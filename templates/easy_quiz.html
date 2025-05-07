@@ -3,11 +3,13 @@
 {% block title %}Easy Quiz{% endblock %}
 
 {% block content %}
-<div class="quiz-header">
+<div class="score-header">
     <div class="score-container">
         <div>Correct: <span id="correct">0</span></div>
         <div class="missed">Missed: <span id="missed">0</span></div>
     </div>
+</div>
+<div class="quiz-header">
     <div class="timer-container">
         <span id="timer">1:00</span>
     </div>
@@ -15,29 +17,19 @@
 
 <div class="quiz-area">
     <div class="labels">
-        <div class="draggable" draggable="true" id="Pajeon">Pajeon</div>
-        <div class="draggable" draggable="true" id="Gimbap">Gimbap</div>
-        <div class="draggable" draggable="true" id="Kimchi">Kimchi</div>
-        <div class="draggable" draggable="true" id="Bulgogi">Bulgogi</div>
-        <div class="draggable" draggable="true" id="Japchae">Japchae</div>
+        {% for item in labels %}
+            <div class="label-container" id="container-{{ item.name }}">
+                <div class="draggable" draggable="true" id="{{ item.name }}">{{ item.name }}</div>
+            </div>
+        {% endfor %}
     </div>
 
     <div class="images">
-        <div class="dropzone" data-answer="Gimbap">
-            <img src="{{ url_for('static', filename='images/gimbap.jpg') }}" alt="Gimbap">
-        </div>
-        <div class="dropzone" data-answer="Pajeon">
-            <img src="{{ url_for('static', filename='images/pajeon.jpg') }}" alt="Pajeon">
-        </div>
-        <div class="dropzone" data-answer="Kimchi">
-            <img src="{{ url_for('static', filename='images/kimchi.jpg') }}" alt="Kimchi">
-        </div>
-        <div class="dropzone" data-answer="Bulgogi">
-            <img src="{{ url_for('static', filename='images/bulgogi.jpg') }}" alt="Bulgogi">
-        </div>
-        <div class="dropzone" data-answer="Japchae">
-            <img src="{{ url_for('static', filename='images/japchae.jpg') }}" alt="Japchae">
-        </div>
+        {% for item in images %}
+            <div class="dropzone" data-answer="{{ item.name }}">
+                <img src="{{ item.image }}" alt="{{ item.name }}">
+            </div>
+        {% endfor %}
     </div>
 </div>
 

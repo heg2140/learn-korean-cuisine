@@ -3,57 +3,52 @@
 {% block title %}Hard Quiz{% endblock %}
 
 {% block content %}
-<div class="quiz-header">
+<div class="score-header">
     <div class="score-container">
         <div>Correct: <span id="correct">0</span></div>
         <div class="missed">Missed: <span id="missed">0</span></div>
     </div>
+</div>
+<div class="quiz-header">
     <div class="timer-container">
         <span id="timer">1:00</span>
     </div>
 </div>
 
-<div class="quiz-area">
-    <div class="labels">
-        <div class="draggable" draggable="true" id="Kimchi">Kimchi</div>
-        <div class="draggable" draggable="true" id="Pajeon">Pajeon</div>
-        <div class="draggable" draggable="true" id="Gimbap">Gimbap</div>
-        <div class="draggable" draggable="true" id="Japchae">Japchae</div>
-        <div class="draggable" draggable="true" id="Bulgogi">Bulgogi</div>
-    </div>
+<div class="final-quiz-grid">
+    {% for card in cards %}
+        {% if loop.index0 < (cards|length // 2) %}
+            <!-- Draggable card only -->
+            <div class="card draggable" draggable="true" data-match-id="{{ card.match_id }}" data-type="{{ card.type }}">
+        {% else %}
+            <!-- Dropzone card only -->
+            <div class="card dropzone" data-match-id="{{ card.match_id }}" data-type="{{ card.type }}">
+        {% endif %}
 
-    <div class="dropzones">
-        <div class="dropzone" data-answer="Kimchi">
-            <img src="{{ url_for('static', filename='images/kimchi.jpg') }}" alt="Kimchi">
+            {% if card.type == "name" %}
+                <p>{{ card.content }}</p>
+
+            {% elif card.type == "image" %}
+                <img src="{{ card.content }}" alt="Dish Image">
+
+            {% elif card.type == "audio" %}
+                <!-- Use per-card scoped audio + button -->
+                <audio class="hidden-audio">
+                    <source src="{{ url_for('static', filename=card.content) }}" type="audio/mpeg">
+                </audio>
+                <button draggable="false" class="learn-listen-button" onclick="playCardAudio(this)">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+
+            {% elif card.type == "ingredients" %}
+                <ul>
+                    {% for ing in card.content %}
+                        <li>{{ ing }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </div>
-        <div class="dropzone" data-answer="Pajeon">
-            <ol>
-                <li>Green Onions</li>
-                <li>Flour</li>
-                <li>Water</li>
-                <li>Soybean Paste</li>
-                <li>Sugar</li>
-                <li>Vegetable Oil</li>
-            </ol>
-        </div>
-        <div class="dropzone" data-answer="Gimbap">
-            <img src="{{ url_for('static', filename='images/gimbap.jpg') }}" alt="Gimbap">
-        </div>
-        <div class="dropzone" data-answer="Japchae">
-            <ol>
-                <li>Sweet Potato Starch Noodles</li>
-                <li>Beef</li>
-                <li>Carrot</li>
-                <li>Spinach</li>
-                <li>Onion</li>
-                <li>Bell Pepper</li>
-                <li>Shiitake Mushroom</li>
-            </ol>
-        </div>
-        <div class="dropzone" data-answer="Bulgogi">
-            <img src="{{ url_for('static', filename='images/bulgogi.jpg') }}" alt="Bulgogi">
-        </div>
-    </div>
+    {% endfor %}
 </div>
 
 <a href="{{ url_for('quiz') }}" class="back-button">← Back</a>

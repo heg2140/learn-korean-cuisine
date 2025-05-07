@@ -19,13 +19,37 @@ document.querySelectorAll('.dropzone').forEach(zone => {
     zone.addEventListener('drop', (e) => {
         e.preventDefault();
         const correctAnswer = zone.dataset.answer;
+
+        if (!draggedItem) return;
+
+        if (zone.children.length > 1) return; // prevent multiple drops
+
         if (draggedItem.id === correctAnswer) {
+            // Correct match
             zone.appendChild(draggedItem);
             correctCount++;
+
             draggedItem.setAttribute("draggable", "false");
             draggedItem.style.cursor = "default";
+
+            zone.classList.add("matched");
+            draggedItem.classList.add("matched");
         } else {
+            // Incorrect match
             missedCount++;
+
+            zone.classList.add("incorrect");
+            draggedItem.classList.add("incorrect");
+
+            // Return item to original container
+            const originalContainer = document.getElementById(`container-${draggedItem.id}`);
+            originalContainer.appendChild(draggedItem);
+
+            // Temporary highlight
+            setTimeout(() => {
+                zone.classList.remove("incorrect");
+                draggedItem.classList.remove("incorrect");
+            }, 500);
         }
 
         document.getElementById("correct").textContent = correctCount;

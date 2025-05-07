@@ -4,10 +4,18 @@
 
 {% block content %}
 <div class="result-container">
-    <h1>Excellent Work!</h1>
-    <p>You completed the Hard Quiz 🎉</p>
-    <p>Time Taken: {{ time_taken }}</p>
-    <p>Missed: {{ misses }}</p>
-    <a href="{{ url_for('quiz') }}" class="main-button">Back to Quiz Menu</a>
+    <h1>Congratulations!</h1>
+    <p class="result-details">
+        You completed all matches in <span class="result-time">{{ time_taken }}</span>
+        seconds with <span class="result-misses">{{ misses }}</span> misses.
+    </p>
+    <div class="result-buttons">
+        <a href="{{ url_for('quiz') }}" class="result-button">More Quizzes</a>
+        <a href="{{ url_for('hard_quiz') }}" class="result-button">Play Again</a>
+    </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/results.js') }}"></script>
 {% endblock %}

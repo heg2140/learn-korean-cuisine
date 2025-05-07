@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, flash, url_for
-
+import random, uuid
 app = Flask(__name__)
 app.secret_key = 'some_secret_key'
 
@@ -149,28 +149,102 @@ def quiz():
     
 @app.route('/quiz/easy')
 def easy_quiz():
-    return render_template('easy_quiz.html')
+    flashcards = [item for item in items if item["type"] == "flashcard"]
 
-@app.route("/quiz/easy/results")
+    # Make sure there are at least 5 flashcards
+    if len(flashcards) < 5:
+        raise ValueError("Not enough flashcards")
+
+    # Sample 5 flashcards
+    selected_items = random.sample(flashcards, 5)
+
+    # Shuffle labels and images separately
+    labels = selected_items.copy()
+    images = selected_items.copy()
+    random.shuffle(labels)
+    random.shuffle(images)
+
+    return render_template("easy_quiz.html", labels=labels, images=images)
+
+
+@app.route("/quiz/easy/result")
 def easy_quiz_results():
-    time_taken = request.args.get("time")
-    misses = request.args.get("misses", 0)
+    time_left_str = request.args.get("time", "1:00")  # format: "mm:ss"
+    misses = request.args.get("misses", "0")
+
+    try:
+        minutes, seconds = map(int, time_left_str.split(":"))
+        time_left = minutes * 60 + seconds
+        time_taken = 60 - time_left
+    except ValueError:
+        time_taken = 60  # fallback if something goes wrong
+
     return render_template("easy_result.html", time_taken=time_taken, misses=misses)
 
 
 @app.route('/quiz/medium')
 def medium_quiz():
-    return render_template('medium_quiz.html')
+    flashcards = [item for item in items if item["type"] == "flashcard"]
+
+    # Sample 5 flashcards
+    selected_items = random.sample(flashcards, 5)
+
+    # Shuffle labels and images separately
+    labels = selected_items.copy()
+    ingredients = selected_items.copy()
+    random.shuffle(labels)
+    random.shuffle(ingredients)
+
+    return render_template("medium_quiz.html", labels=labels, images=ingredients)
 
 @app.route('/quiz/medium/result')
 def medium_quiz_result():
-    time_taken = request.args.get("time", "1:00")
-    misses = request.args.get("misses", 0)
+    time_left_str = request.args.get("time", "1:00")  # format: "mm:ss"
+    misses = request.args.get("misses", "0")
+
+    try:
+        minutes, seconds = map(int, time_left_str.split(":"))
+        time_left = minutes * 60 + seconds
+        time_taken = 60 - time_left
+    except ValueError:
+        time_taken = 60  # fallback if something goes wrong
+
     return render_template("medium_result.html", time_taken=time_taken, misses=misses)
 
 @app.route('/quiz/hard')
 def hard_quiz():
-    return render_template('hard_quiz.html')
+    flashcards = [item for item in items if item["type"] == "flashcard"]
+    selected = random.sample(flashcards, 5)
+
+    representations = []
+
+    for card in selected:
+        # Create a unique ID to pair these two representations
+        match_id = str(uuid.uuid4())
+
+        # Choose 2 random types to represent this dish
+        types = ["name", "image", "audio", "ingredients"]
+        chosen_types = random.sample(types, 2)
+
+        for typ in chosen_types:
+            if typ == "name":
+                content = card["name"]
+            elif typ == "image":
+                content = card["image"]
+            elif typ == "audio":
+                content = card["audio"]
+            elif typ == "ingredients":
+                content = card["ingredients"]
+
+            representations.append({
+                "type": typ,
+                "content": content,
+                "match_id": match_id
+            })
+
+    random.shuffle(representations)
+
+    return render_template("hard_quiz.html", cards=representations)
 
 @app.route('/quiz/hard/result')
 def hard_quiz_result():

@@ -4,11 +4,13 @@
 {% block title %}Medium Quiz{% endblock %}
 
 {% block content %}
-<div class="quiz-header">
+<div class="score-header">
     <div class="score-container">
         <div>Correct: <span id="correct">0</span></div>
         <div class="missed">Missed: <span id="missed">0</span></div>
     </div>
+</div>
+<div class="quiz-header">
     <div class="timer-container">
         <span id="timer">1:00</span>
     </div>
@@ -16,68 +18,23 @@
 
 <div class="quiz-area">
     <div class="labels">
-        <div class="draggable" draggable="true" id="Pajeon">Pajeon</div>
-        <div class="draggable" draggable="true" id="Gimbap">Gimbap</div>
-        <div class="draggable" draggable="true" id="Kimchi">Kimchi</div>
-        <div class="draggable" draggable="true" id="Japchae">Japchae</div>
-        <div class="draggable" draggable="true" id="Bulgogi">Bulgogi</div>
+        {% for item in labels %}
+            <div class="label-container" id="container-{{ item.name }}">
+                <div class="draggable" draggable="true" id="{{ item.name }}">{{ item.name }}</div>
+            </div>
+        {% endfor %}
     </div>
 
-    <div class="ingredients">
-        <div class="dropzone" data-answer="Gimbap">
-            <ol>
-                <li>Rice</li>
-                <li>Seaweed</li>
-                <li>Carrot</li>
-                <li>Spinach</li>
-                <li>Fish Sauce</li>
-                <li>Pickled Radish</li>
-                <li>Sesame Oil</li>
-            </ol>
-        </div>
-        <div class="dropzone" data-answer="Pajeon">
-            <ol>
-                <li>Green Onions</li>
-                <li>Flour</li>
-                <li>Water</li>
-                <li>Soybean Paste</li>
-                <li>Sugar</li>
-                <li>Vegetable Oil</li>
-            </ol>
-        </div>
-        <div class="dropzone" data-answer="Kimchi">
-            <ol>
-                <li>Brined Napa Cabbage</li>
-                <li>Daikon Radish</li>
-                <li>Korean Chili Powder</li>
-                <li>Rice Flour</li>
-                <li>Fish Sauce</li>
-                <li>Garlic</li>
-                <li>Ginger</li>
-            </ol>
-        </div>
-        <div class="dropzone" data-answer="Japchae">
-            <ol>
-                <li>Sweet Potato Starch Noodles</li>
-                <li>Beef</li>
-                <li>Carrot</li>
-                <li>Spinach</li>
-                <li>Onion</li>
-                <li>Bell Pepper</li>
-                <li>Shiitake Mushroom</li>
-            </ol>
-        </div>
-        <div class="dropzone" data-answer="Bulgogi">
-            <ol>
-                <li>Beef</li>
-                <li>Garlic</li>
-                <li>Green Onion</li>
-                <li>Soy Sauce</li>
-                <li>Sugar</li>
-                <li>Sesame Oil</li>
-                <li>Sesame Seeds</li>
-            </ol>
-        </div>
+    <div class="ingredient-quiz">
+        {% for item in images %}
+            <div class="dropzone" data-answer="{{ item.name }}">
+                <ul class="ingredient-card">
+                    {% for ingredient in item.ingredients %}
+                        <li>{{ ingredient }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
     </div>
 </div>
 

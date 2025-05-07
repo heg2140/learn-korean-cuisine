@@ -113,12 +113,12 @@ input[type="radio"] {
     justify-content: center;
     gap: 2rem;
     padding: 0 1rem;
-    flex-wrap: wrap;
+    
 }
 
 .quiz-card {
     background-color: white;
-    border: 1px solid #ddd;
+    border: 1px solid red;
     border-radius: 1rem;
     padding: 2rem;
     width: 220px;
@@ -139,8 +139,8 @@ input[type="radio"] {
 }
 
 .quiz-start {
-    background-color: #e0e0e0;
-    color: #333;
+    background-color: rgb(8,76,172);
+    color: white;
     padding: 0.6rem 1.8rem;
     border-radius: 2rem;
     text-decoration: none;
@@ -260,7 +260,7 @@ input[type="radio"] {
     border: none;
     font-size: 2rem;
     cursor: pointer;
-    color: #3b3b3b;
+    color: red;
 }
 .learn-flip-card {
     width: 100%;
@@ -318,6 +318,15 @@ input[type="radio"] {
     line-height: 1.8;
     color: #3b3b3b
 }
+.ingredient-card {
+    list-style-type: none;
+    text-align: left;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #3b3b3b
+}
 .text-dark{
     color: #3b3b3b
 }
@@ -328,14 +337,21 @@ input[type="radio"] {
     gap: 2rem;
     margin-top: 2rem;
 }
-
-.quiz-header {
-    display: flex;
-    justify-content: space-around;
+.score-container {
+    justify-content: left;
     margin-top: 1.5rem;
     font-size: 1.2rem;
     font-weight: 500;
     color: #333;
+}
+.quiz-header {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #333;
+
 }
 
 .quiz-area {
@@ -349,6 +365,7 @@ input[type="radio"] {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    margin-top: 3rem;
 }
 
 .draggable {
@@ -361,9 +378,61 @@ input[type="radio"] {
 }
 
 .images {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px; /* spacing between images */
+    margin-top: 20px;
+    justify-items: center; /* centers images horizontally */
+}
+.ingredient-quiz {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px; /* spacing between images */
+    margin-top: 20px;
+    justify-items: center; /* centers images horizontally */
+}
+
+.dropzone img {
+    max-width: 100%;
+    height: auto;
+    padding: 5px;
+}
+
+.dropzone.matched {
+    border: 3px solid #4CAF50; /* green border */
+    background-color: #white;
+}
+
+.draggable.matched {
+    background-color: #4CAF50; /* green background */
+    color: white;
+    border: none;
+    pointer-events: none; /* optional: prevent further dragging */
+}
+
+/* Red flash */
+.dropzone.incorrect{
+    border: 2px solid #e53935;
+    background-color: white;
+    transition: background-color 0.3s, border 0.3s;
+}
+.draggable.incorrect {
+    border: 2px solid #e53935;
+    background-color: #e53935;
+    transition: background-color 0.3s, border 0.3s;
+}
+
+/* Optional: Shake effect */
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+.shake {
+    animation: shake 0.3s;
 }
 
 .dropzone {
@@ -550,5 +619,68 @@ input[type="radio"] {
 
 .result-button:hover {
     background-color: #143a96;
+}
+
+.final-quiz-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* Let cards use their natural size */
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    max-width: 300px;
+    max-height: 400px;
+    width: auto;
+    height: auto;
+    padding: 16px;
+    margin: 10px;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+    overflow: auto;
+    transition: transform 0.2s ease;
+    cursor: grab;
+    pointer-events: auto;
+}
+
+
+
+/* Prevent images from overflowing */
+.card img {
+    max-width: 100%;
+    max-height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-weight: normal;         /* ✅ not bold */
+    font-size: 18px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.card ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.card li {
+    padding: 2px 0;
 }
 
