@@ -19,6 +19,13 @@ body {
     font-weight: bold;
 }
 
+.nav-logo a{
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
 .nav-links {
     list-style: none;
     display: flex;
@@ -400,7 +407,7 @@ input[type="radio"] {
 
 .dropzone.matched {
     border: 3px solid #4CAF50; /* green border */
-    background-color: #white;
+    background-color: white;
 }
 
 .draggable.matched {
@@ -409,6 +416,14 @@ input[type="radio"] {
     border: none;
     pointer-events: none; /* optional: prevent further dragging */
 }
+
+.match-nested {
+    flex-direction: column;
+    align-items: center;
+    border: 3px solid #4CAF50; 
+    border-radius: 10px;
+    padding: 5px;
+  }
 
 /* Red flash */
 .dropzone.incorrect{
@@ -543,6 +558,7 @@ input[type="radio"] {
     border-radius: 20px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    text-decoration: none;
 }
 
 .pop-quiz-submit-button:hover {
@@ -615,6 +631,7 @@ input[type="radio"] {
     font-weight: 500;
     text-decoration: none;
     transition: background-color 0.3s ease;
+    margin: 7px;
 }
 
 .result-button:hover {

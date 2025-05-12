@@ -15,7 +15,10 @@ document.querySelectorAll('.draggable').forEach(el => {
       if (correctDish === targetDish) {
         zone.innerHTML += `<div class='correct'>✅ ${ingredient}</div>`;
       } else {
-        document.getElementById("result").innerText = `❌ ${ingredient} does not belong in ${targetDish}. Try again!`;
+        const resultBox = document.getElementById("result");
+        if (resultBox) {
+          resultBox.innerText = `❌ ${ingredient} does not belong in ${targetDish}. Try again!`;
+        }
       }
     });
   });

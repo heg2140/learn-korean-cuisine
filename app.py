@@ -1,5 +1,10 @@
-from flask import Flask, render_template, request, redirect, flash, url_for
-import random, uuid
+from flask import Flask, render_template, request, redirect, flash, url_for, session, jsonify
+import random, uuid, datetime, logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler()]
+)
 app = Flask(__name__)
 app.secret_key = 'some_secret_key'
 
@@ -119,7 +124,48 @@ def learn(index):
     if 0 <= index < len(items):
         item = items[index]
         template = 'learn.html' if item['type'] == 'flashcard' else 'pop-quiz.html'
-        return render_template(template, item=item, index=index, total=len(items))
+
+        # Log the visit
+        log = session.get('learning_log', [])
+        log.append({
+            "index": index,
+            "type": item['type'],
+            "name": item.get('name', 'quiz'),
+            "timestamp": datetime.datetime.now().isoformat()
+        })
+        session['learning_log'] = log
+
+        # Defaults
+        selected = None
+        is_correct = None
+
+        if item['type'] == 'quiz':
+            answers = session.get('quiz_answers', {})
+            results = session.get('quiz_results', {})
+            submitted = set(session.get('quiz_submitted', []))
+
+            if str(index) in submitted:
+                selected = answers.get(str(index))
+                is_correct = results.get(str(index))
+            else:
+                selected = None
+                is_correct = None
+
+        return render_template(
+            template,
+            item=item,
+            index=index,
+            total=len(items),
+            selected=selected,
+            is_correct=is_correct,
+            is_last=(index == len(items) - 1)
+        )
+    
+    logging.debug("SESSION DEBUG")
+    logging.debug("quiz_answers: %s", session.get('quiz_answers'))
+    logging.debug("quiz_results: %s", session.get('quiz_results'))
+    logging.debug("current index: %s", index)
+
     return redirect('/learn/0')
 
 @app.route('/learn')
@@ -130,8 +176,54 @@ def learn_redirect():
 def pop_quiz_result(index):
     selected = request.form.get("answer")
     correct = items[index]["answer"]
+
+    # 🚫 Don't store anything if nothing was selected
+    if not selected:
+        # Just re-render the page without logging or session writing
+        return render_template(
+            'pop-quiz.html',
+            item=items[index],
+            index=index,
+            total=len(items),
+            selected=None,
+            is_correct=None,
+            is_last=(index == len(items) - 1)
+        )
+
     is_correct = selected == correct
-    is_last = index == len(items) - 1  
+    is_last = index == len(items) - 1
+
+    # ✅ Only now: store selected answer
+    answers = session.get('quiz_answers', {})
+    answers[str(index)] = selected
+    session['quiz_answers'] = answers
+
+    # ✅ Only now: store correctness
+    results = session.get('quiz_results', {})
+    results[str(index)] = is_correct
+    session['quiz_results'] = results
+
+    submitted = session.get('quiz_submitted', set())
+    submitted = set(submitted) if isinstance(submitted, list) else submitted
+    submitted.add(str(index))
+    session['quiz_submitted'] = list(submitted)
+
+    # ✅ Log it
+    if 'quiz_log' not in session:
+        session['quiz_log'] = []
+
+    log = session['quiz_log']
+    log.append({
+        "index": index,
+        "question": items[index].get("question", "Unknown"),
+        "selected": selected,
+        "correct": correct,
+        "is_correct": is_correct,
+        "timestamp": datetime.datetime.now().isoformat()
+    })
+    session['quiz_log'] = log
+
+    logging.debug("[POP QUIZ] User submitted: %s", log[-1])
 
     return render_template(
         'pop-quiz.html',
@@ -142,6 +234,16 @@ def pop_quiz_result(index):
         is_correct=is_correct,
         is_last=is_last
     )
+
+@app.route('/reset-quiz/<int:index>')
+def reset_quiz(index):
+    # Clear specific quiz answer and result
+    if 'quiz_answers' in session:
+        session['quiz_answers'].pop(str(index), None)
+    if 'quiz_results' in session:
+        session['quiz_results'].pop(str(index), None)
+    session.modified = True
+    return redirect(url_for('learn', index=index))
 
 @app.route('/quiz')
 def quiz():
@@ -185,8 +287,79 @@ def easy_quiz_results():
 def easy_quiz_failed():
     time_taken = request.args.get("time", "1:00")
     misses = request.args.get("misses", "0")
-    return render_template("failed_quiz.html", time_taken=time_taken, misses=misses)
+    return render_template("failed_quiz.html", time_taken=time_taken, misses=misses, level="easy")
 
+@app.route('/quiz/easy/result', methods=['POST'])
+def submit_easy_quiz_answer():
+    index = request.form.get("index")  # which question
+    selected = request.form.get("answer")  # what the user picked
+    correct = get_correct_answer(index)  # your function or lookup
+    is_correct = selected == correct
+
+    # Initialize quiz session log
+    if 'easy_quiz_log' not in session:
+        session['easy_quiz_log'] = []
+
+    log = session['easy_quiz_log']
+    log.append({
+        "index": index,
+        "selected": selected,
+        "correct": correct,
+        "is_correct": is_correct,
+        "timestamp": datetime.datetime.now().isoformat()
+    })
+    session['easy_quiz_log'] = log  # reassign to ensure it's saved
+
+    logging.debug("[LOGGED] Easy quiz entry: %s", log[-1])
+    return redirect(url_for('easy_quiz_result_page'))
+
+@app.route('/quiz/easy/log-answer', methods=['POST'])
+def log_easy_quiz_answer():
+    data = request.get_json()
+
+    # Extract data
+    match_id = data.get("match_id")
+    source_type = data.get("source_type")
+    target_type = data.get("target_type")
+    is_correct = data.get("is_correct")
+
+    # Store in session
+    if 'easy_quiz_log' not in session:
+        session['easy_quiz_log'] = []
+
+    session['easy_quiz_log'].append({
+        "match_id": match_id,
+        "source_type": source_type,
+        "target_type": target_type,
+        "is_correct": is_correct,
+        "timestamp": datetime.datetime.now().isoformat()
+    })
+
+    session.modified = True  # Ensure session updates are saved
+
+    logging.debug("[LOGGED] Easy quiz match: %s", session['easy_quiz_log'][-1])
+
+    return jsonify(success=True)
+
+@app.route('/quiz/easy/store-result', methods=['POST'])
+def store_easy_quiz_result():
+    data = request.get_json()
+
+    outcome = data.get("outcome")             # "won" or "failed"
+    time = data.get("time")                   # e.g., "0:43"
+    misses = data.get("misses")               # e.g., 1
+    matches = data.get("matches")             # e.g., 5
+
+    session["easy_quiz_outcome"] = outcome
+    session["easy_quiz_time"] = time
+    session["easy_quiz_misses"] = misses
+    session["easy_quiz_matches"] = matches
+    session.modified = True
+
+    import logging
+    logging.debug(f"[EASY QUIZ COMPLETE] Outcome: {outcome}, Time: {time}, Misses: {misses}, Matches: {matches}")
+
+    return jsonify(success=True)
 
 @app.route('/quiz/medium')
 def medium_quiz():
@@ -221,7 +394,79 @@ def medium_quiz_result():
 def medium_quiz_failed():
     time_taken = request.args.get("time", "1:00")
     misses = request.args.get("misses", "0")
-    return render_template("failed_quiz.html", time_taken=time_taken, misses=misses)
+    return render_template("failed_quiz.html", time_taken=time_taken, misses=misses, level="medium")
+
+@app.route('/quiz/medium/result', methods=['POST'])
+def submit_medium_quiz_answer():
+    index = request.form.get("index")  # which question
+    selected = request.form.get("answer")  # what the user picked
+    correct = get_correct_answer(index)  # your function or lookup
+    is_correct = selected == correct
+
+    # Initialize quiz session log
+    if 'medium_quiz_log' not in session:
+        session['medium_quiz_log'] = []
+
+    log = session['medium_quiz_log']
+    log.append({
+        "index": index,
+        "selected": selected,
+        "correct": correct,
+        "is_correct": is_correct,
+        "timestamp": datetime.datetime.now().isoformat()
+    })
+    session['medium_quiz_log'] = log  # reassign to ensure it's saved
+
+    logging.debug("[LOGGED] Medium quiz entry: %s", log[-1])
+    return redirect(url_for('medium_quiz_result_page'))
+
+@app.route('/quiz/medium/log-answer', methods=['POST'])
+def log_medium_quiz_answer():
+    data = request.get_json()
+
+    # Extract data
+    match_id = data.get("match_id")
+    source_type = data.get("source_type")
+    target_type = data.get("target_type")
+    is_correct = data.get("is_correct")
+
+    # Store in session
+    if 'medium_quiz_log' not in session:
+        session['medium_quiz_log'] = []
+
+    session['medium_quiz_log'].append({
+        "match_id": match_id,
+        "source_type": source_type,
+        "target_type": target_type,
+        "is_correct": is_correct,
+        "timestamp": datetime.datetime.now().isoformat()
+    })
+
+    session.modified = True  # Ensure session updates are saved
+
+    logging.debug("[LOGGED] Medium quiz match: %s", session['medium_quiz_log'][-1])
+
+    return jsonify(success=True)
+
+@app.route('/quiz/medium/store-result', methods=['POST'])
+def store_medium_quiz_result():
+    data = request.get_json()
+
+    outcome = data.get("outcome")             # "won" or "failed"
+    time = data.get("time")                   # e.g., "0:43"
+    misses = data.get("misses")               # e.g., 1
+    matches = data.get("matches")             # e.g., 5
+
+    session["medium_quiz_outcome"] = outcome
+    session["medium_quiz_time"] = time
+    session["medium_quiz_misses"] = misses
+    session["medium_quiz_matches"] = matches
+    session.modified = True
+
+    import logging
+    logging.debug(f"[MEDIUM QUIZ COMPLETE] Outcome: {outcome}, Time: {time}, Misses: {misses}, Matches: {matches}")
+
+    return jsonify(success=True)
 
 @app.route('/quiz/hard')
 def hard_quiz():
@@ -288,7 +533,78 @@ def hard_quiz_result():
 def hard_quiz_failed():
     time_taken = request.args.get("time", "1:00")
     misses = request.args.get("misses", "0")
-    return render_template("failed_quiz.html", time_taken=time_taken, misses=misses)
+    return render_template("failed_quiz.html", time_taken=time_taken, misses=misses, level="easy")
+
+@app.route('/quiz/hard/result', methods=['POST'])
+def submit_quiz_answer():
+    index = request.form.get("index")  # which question
+    selected = request.form.get("answer")  # what the user picked
+    correct = get_correct_answer(index)  # your function or lookup
+    is_correct = selected == correct
+
+    # Initialize quiz session log
+    if 'hard_quiz_log' not in session:
+        session['hard_quiz_log'] = []
+
+    log = session['hard_quiz_log']
+    log.append({
+        "index": index,
+        "selected": selected,
+        "correct": correct,
+        "is_correct": is_correct,
+        "timestamp": datetime.datetime.now().isoformat()
+    })
+    session['hard_quiz_log'] = log  # reassign to ensure it's saved
+    logging.debug("[LOGGED] Hard quiz entry: %s", log[-1])
+    return redirect(url_for('hard_quiz_result_page'))
+
+@app.route('/quiz/hard/log-answer', methods=['POST'])
+def log_hard_quiz_answer():
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "No data received"}), 400
+
+    match_id = data.get("match_id")
+    source_type = data.get("source_type")
+    target_type = data.get("target_type")
+    is_correct = data.get("is_correct")
+
+    # Store in session
+    if 'hard_quiz_log' not in session:
+        session['hard_quiz_log'] = []
+
+    session['hard_quiz_log'].append({
+        "match_id": match_id,
+        "source_type": source_type,
+        "target_type": target_type,
+        "is_correct": is_correct,
+        "timestamp": datetime.datetime.now().isoformat()
+    })
+
+    session.modified = True
+    logging.debug("[LOGGED] Medium quiz match: %s", session['medium_quiz_log'][-1])
+
+
+    return jsonify(success=True)
+
+@app.route('/quiz/hard/store-result', methods=['POST'])
+def store_hard_quiz_result():
+    data = request.get_json()
+
+    outcome = data.get("outcome")
+    time = data.get("time")
+    misses = data.get("misses")
+    matches = data.get("matches")
+
+    session["hard_quiz_outcome"] = outcome
+    session["hard_quiz_time"] = time
+    session["hard_quiz_misses"] = misses
+    session["hard_quiz_matches"] = matches
+    session.modified = True
+
+    logging.debug(f"[QUIZ COMPLETE] Outcome: {outcome}, Time: {time}, Misses: {misses}, Matches: {matches}")
+    return jsonify(success=True)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -7,19 +7,24 @@
         <div class="learn-flip-front">
           <div class="pop-quiz-question">
             <h3 class="text-dark">{{ item.question }}</h3>
-  
+            <!-- DEBUG: index={{ index }}, selected={{ selected }}, is_correct={{ is_correct }} -->
             <form method="POST" action="{{ url_for('pop_quiz_result', index=index) }}">
               {% for option in item.options %}
                 <label class="pop-quiz-option">
-                  <input type="radio" name="answer" value="{{ option }}"
+                  <input
+                    type="radio"
+                    name="answer"
+                    value="{{ option }}"
                     {% if selected == option %}checked{% endif %}
-                    {% if is_correct is defined %}disabled{% endif %}>
+                    {% if is_correct is not none %}disabled{% endif %}
+                  >
                   {{ option }}
                 </label><br>
               {% endfor %}
-  
-              {% if is_correct is not defined %}
+            
+              {% if is_correct is none %}
                 <button type="submit" class="pop-quiz-submit-button">Submit</button>
+            
               {% elif is_correct %}
                 <p style="color: green; font-weight: bold; margin-top: 1rem;">Correct!</p>
                 {% if is_last %}
@@ -27,11 +32,12 @@
                 {% else %}
                   <a href="{{ url_for('learn', index=index+1) }}" class="pop-quiz-submit-button">Next</a>
                 {% endif %}
+            
               {% else %}
                 <p style="color: red; font-weight: bold; margin-top: 1rem;">Incorrect</p>
                 <div class="incorrect-buttons">
                   <a href="{{ url_for('learn', index=index-1) }}" class="pop-quiz-submit-button">Relearn</a>
-                  <a href="{{ url_for('learn', index=index) }}" class="pop-quiz-submit-button">Try Again</a>
+                  <a href="{{ url_for('reset_quiz', index=index) }}" class="pop-quiz-submit-button">Try Again</a>
                 </div>
               {% endif %}
             </form>

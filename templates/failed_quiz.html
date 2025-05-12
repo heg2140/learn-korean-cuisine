@@ -8,10 +8,16 @@
     <p class="result-details">
         You did not complete all matches in 60 seconds.
     </p>
-    <div class="result-buttons">
-        <a href="{{ url_for('learn', index=0) }}" class="result-button">Relearn</a>
-        <a href="{{ url_for('hard_quiz') }}" class="result-button">Play Again</a>
-    </div>
+    <a href="{{ url_for('learn', index=0) }}" class="result-button">Relearn</a>
+
+    {% if level == "easy" %}
+        <a href="{{ url_for('easy_quiz') }}" class="result-button">Try Again</a>
+    {% elif level == "medium" %}
+        <a href="{{ url_for('medium_quiz') }}" class="result-button">Try Again</a>
+    {% elif level == "hard" %}
+        <a href="{{ url_for('hard_quiz') }}" class="result-button">Try Again</a>
+    {% endif %}
+
 </div>
 {% endblock %}
 

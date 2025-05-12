@@ -6,7 +6,7 @@
 <div class="score-header">
     <div class="score-container">
         <div>Correct: <span id="correct">0</span></div>
-        <div class="missed">Missed: <span id="missed">0</span></div>
+        <div>Missed: <span id="missed">0</span></div>
     </div>
 </div>
 <div class="quiz-header">
@@ -17,9 +17,8 @@
 
 <div class="final-quiz-grid">
     {% for card in cards %}
-        <div class="card 
-            {% if card.role == 'draggable' %}draggable{% else %}dropzone{% endif %}" 
-            {% if card.role == 'draggable' %}draggable="true"{% endif %}
+        <div class="card draggable dropzone"
+            draggable="true"
             data-match-id="{{ card.match_id }}" 
             data-type="{{ card.type }}">
             

@@ -1,6 +1,7 @@
 let correctCount = 0;
 let missedCount = 0;
 let draggedItem = null;
+const totalQuestions = document.querySelectorAll('.dropzone').length;
 
 // Handle drag start
 document.querySelectorAll('.draggable').forEach(item => {
@@ -18,7 +19,21 @@ document.querySelectorAll('.dropzone').forEach(zone => {
     zone.addEventListener('drop', (e) => {
         e.preventDefault();
         const correctAnswer = zone.dataset.answer;
-        if (draggedItem.id === correctAnswer) {
+        const isCorrect = draggedItem.id === correctAnswer;
+    
+        // ✅ Log attempt
+        fetch("/quiz/easy/log-answer", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            match_id: draggedItem.id,
+            source_type: "label",
+            target_type: "dropzone",
+            is_correct: isCorrect
+          })
+        });
+    
+        if (isCorrect) {
             zone.appendChild(draggedItem);
             correctCount++;
             draggedItem.setAttribute("draggable", "false");
@@ -27,28 +42,26 @@ document.querySelectorAll('.dropzone').forEach(zone => {
             draggedItem.classList.add('matched');
         } else {
             missedCount++;
-            // Add red highlight
             zone.classList.add("incorrect");
             draggedItem.classList.add("incorrect", "shake");
-
-            // Return the item to its original container
+    
             const originalContainer = document.getElementById(`container-${draggedItem.id}`);
-            originalContainer.appendChild(draggedItem);
-
-            // Optional: disable drag temporarily to prevent spam-drop
+            if (originalContainer) {
+                originalContainer.appendChild(draggedItem);
+            }
+    
             draggedItem.setAttribute("draggable", "false");
-
-            // Remove highlight after short delay
+    
             setTimeout(() => {
                 zone.classList.remove("incorrect");
                 draggedItem.classList.remove("incorrect", "shake");
                 draggedItem.setAttribute("draggable", "true");
             }, 500);
         }
-
+    
         document.getElementById("correct").textContent = correctCount;
         document.getElementById("missed").textContent = missedCount;
-
+    
         checkCompletion();
     });
 });
@@ -74,29 +87,42 @@ const timerInterval = setInterval(updateTimer, 1000);
 
 // Function to handle end of quiz
 function endQuiz() {
-    missedCount = 5;
-    document.getElementById("missed").textContent = missedCount;
-    const time = document.getElementById("timer").textContent;
-
-    // Save to localStorage (optional)
-    localStorage.setItem("easyQuizTime", time);
-    localStorage.setItem("easyQuizMissed", missedCount);
-
-    // Redirect with query parameters
-    window.location.href = `/quiz/easy/failed?time=${encodeURIComponent(time)}&misses=${missedCount}`;
-}
+    const timeTaken = document.getElementById("timer").textContent;
+  
+    fetch("/quiz/easy/store-result", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        outcome: "failed",
+        time: timeTaken,
+        misses: missedCount,
+        matches: correctCount
+      })
+    })
+    .catch(err => console.error("Easy quiz result logging failed:", err))
+    .finally(() => {
+      window.location.href = `/quiz/easy/failed?time=${encodeURIComponent(timeTaken)}&misses=${missedCount}`;
+    });
+  }
 
 function checkCompletion() {
-    if (correctCount === 5) {
-        const time = document.getElementById("timer").textContent;
-
-        // Save to localStorage (optional)
-        localStorage.setItem("easyQuizTime", time);
-        localStorage.setItem("easyQuizMissed", missedCount);
-
-        // Delay before redirect
-        setTimeout(() => {
-            window.location.href = `/quiz/easy/result?time=${encodeURIComponent(time)}&misses=${missedCount}`;
-        }, 500);
+    if (correctCount === totalQuestions) {
+      clearInterval(timerInterval);
+      const timeTaken = document.getElementById("timer").textContent;
+  
+      fetch("/quiz/easy/store-result", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          outcome: "won",
+          time: timeTaken,
+          misses: missedCount,
+          matches: correctCount
+        })
+      })
+      .catch(err => console.error("Easy quiz result logging failed:", err))
+      .finally(() => {
+        window.location.href = `/quiz/easy/result?time=${encodeURIComponent(timeTaken)}&misses=${missedCount}`;
+      });
     }
-}
+  }
