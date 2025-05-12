@@ -118,7 +118,7 @@ input[type="radio"] {
 
 .quiz-card {
     background-color: white;
-    border: 1px solid red;
+    border: 1px solid lightblue;
     border-radius: 1rem;
     padding: 2rem;
     width: 220px;
