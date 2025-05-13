@@ -525,8 +525,15 @@ def hard_quiz():
 
 @app.route('/quiz/hard/result')
 def hard_quiz_result():
-    time_taken = request.args.get("time", "1:00")
-    misses = request.args.get("misses", 0)
+    time_left_str = request.args.get("time", "1:00")  # format: "mm:ss"
+    misses = request.args.get("misses", "0")
+
+    try:
+        minutes, seconds = map(int, time_left_str.split(":"))
+        time_left = minutes * 60 + seconds
+        time_taken = 60 - time_left
+    except ValueError:
+        time_taken = 60  # fallback if something goes wrong
     return render_template("hard_result.html", time_taken=time_taken, misses=misses)
 
 @app.route('/quiz/hard/failed')
