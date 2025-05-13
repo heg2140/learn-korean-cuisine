@@ -729,3 +729,24 @@ input[type="radio"] {
     min-height: 100px;
     background-color: #f9f9f9;
 }
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #323232;
+    color: white;
+    padding: 16px 24px;
+    border-radius: 10px;
+    font-size: 18px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 1000;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+  
+.popup.show {
+    opacity: 1;
+}

@@ -2,6 +2,9 @@
 
 {% block content %}
 <audio id="audio" src="{{ url_for('static', filename=item.audio) }}"></audio>
+<div id="flipPopup" class="popup">
+  Click on a card to flip!
+</div>
 <div class="learn-flip-card-wrapper">
   <div class="learn-flip-card" onclick="this.classList.toggle('flipped')">
     <div class="learn-flip-inner">

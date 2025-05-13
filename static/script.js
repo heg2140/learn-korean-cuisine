@@ -26,3 +26,11 @@ document.querySelectorAll('.draggable').forEach(el => {
   function toggleStar(button) {
     button.classList.toggle("favorited");
   }
+
+  window.addEventListener('load', () => {
+    const popup = document.getElementById('flipPopup');
+    popup.classList.add('show');
+    setTimeout(() => {
+      popup.classList.remove('show');
+    }, 3000); // hides after 3 seconds
+  });
