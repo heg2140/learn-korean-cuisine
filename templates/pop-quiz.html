@@ -7,7 +7,6 @@
         <div class="learn-flip-front">
           <div class="pop-quiz-question">
             <h3 class="text-dark">{{ item.question }}</h3>
-            <!-- DEBUG: index={{ index }}, selected={{ selected }}, is_correct={{ is_correct }} -->
             <form method="POST" action="{{ url_for('pop_quiz_result', index=index) }}">
               {% for option in item.options %}
                 <label class="pop-quiz-option">

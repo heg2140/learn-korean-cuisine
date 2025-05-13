@@ -29,8 +29,15 @@ document.querySelectorAll('.draggable').forEach(el => {
 
   window.addEventListener('load', () => {
     const popup = document.getElementById('flipPopup');
-    popup.classList.add('show');
-    setTimeout(() => {
-      popup.classList.remove('show');
-    }, 3000); // hides after 3 seconds
+  
+    if (!popup) return;
+  
+    if (!sessionStorage.getItem('hasSeenFlipPopup')) {
+      popup.classList.add('show');
+      sessionStorage.setItem('hasSeenFlipPopup', 'true');
+  
+      setTimeout(() => {
+        popup.classList.remove('show');
+      }, 3000);
+    }
   });

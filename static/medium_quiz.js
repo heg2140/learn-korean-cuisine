@@ -21,24 +21,22 @@ document.querySelectorAll('.dropzone').forEach(zone => {
         const correctAnswer = zone.dataset.answer;
     
         if (!draggedItem) return;
-        if (zone.children.length > 1) return; // prevent multiple drops
+        if (zone.children.length > 1) return; 
     
         const wasCorrect = draggedItem.id === correctAnswer;
     
-        // ✅ Log the attempt
         fetch("/quiz/medium/log-answer", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             match_id: draggedItem.id,
-            source_type: "label",  // or "ingredient" if you track that
+            source_type: "label",  
             target_type: "dropzone",
             is_correct: wasCorrect
           })
         });
     
         if (wasCorrect) {
-            // Correct match
             zone.appendChild(draggedItem);
             correctCount++;
     
@@ -48,13 +46,11 @@ document.querySelectorAll('.dropzone').forEach(zone => {
             zone.classList.add("matched");
             draggedItem.classList.add("matched");
         } else {
-            // Incorrect match
             missedCount++;
     
             zone.classList.add("incorrect");
             draggedItem.classList.add("incorrect");
-    
-            // Return item to original container
+
             const originalContainer = document.getElementById(`container-${draggedItem.id}`);
             originalContainer.appendChild(draggedItem);
     
@@ -88,14 +84,11 @@ const timerInterval = setInterval(updateTimer, 1000);
 
 function endQuiz() {
     clearInterval(timerInterval);
-  
-    // Get actual remaining time
     const timeText = document.getElementById("timer").textContent;
     const [minStr, secStr] = timeText.split(":");
     const timeLeft = parseInt(minStr) * 60 + parseInt(secStr);
     const timeTaken = 60 - timeLeft;
-  
-    // Store result before redirect
+
     fetch("/quiz/medium/store-result", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

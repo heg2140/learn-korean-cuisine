@@ -8,7 +8,6 @@ let timerInterval;
 window.addEventListener("load", () => {
   const timerElement = document.getElementById("timer");
 
-  // Make all cards draggable
   document.querySelectorAll(".card").forEach(card => {
     card.addEventListener("dragstart", e => {
       draggedItem = card;
@@ -29,7 +28,6 @@ window.addEventListener("load", () => {
         const targetType = card.dataset.type;
       
         if (sourceMatchId === targetMatchId) {
-          // ✅ Correct match
           draggedItem.setAttribute("draggable", "false");
           card.setAttribute("draggable", "false");
           draggedItem.style.cursor = "default";
@@ -46,7 +44,6 @@ window.addEventListener("load", () => {
       
           correctCount++;
       
-          // ✅ Log correct match
           fetch("/quiz/hard/log-answer", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -58,18 +55,16 @@ window.addEventListener("load", () => {
             })
           });
         } else {
-          // ❌ Incorrect match
           draggedItem.classList.add("incorrect");
           card.classList.add("incorrect");
       
           missedCount++;
       
-          // ✅ Log incorrect match
           fetch("/quiz/hard/log-answer", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              match_id: `${sourceMatchId}→${targetMatchId}`, // distinguish mismatch
+              match_id: `${sourceMatchId}→${targetMatchId}`, 
               source_type: sourceType,
               target_type: targetType,
               is_correct: false
@@ -82,7 +77,6 @@ window.addEventListener("load", () => {
           }, 500);
         }
       
-        // update score
         document.getElementById("correct").textContent = correctCount;
         document.getElementById("missed").textContent = missedCount;
       
@@ -90,7 +84,6 @@ window.addEventListener("load", () => {
       });
   });
 
-  // Timer setup
   timerInterval = setInterval(updateTimer, 1000);
 
   function updateTimer() {
@@ -106,13 +99,11 @@ window.addEventListener("load", () => {
   }
 });
 
-// Completion
 function checkCompletion() {
     if (correctCount === totalQuestions) {
       clearInterval(timerInterval);
       const timeTaken = document.getElementById("timer").textContent;
-  
-      // Send result to backend
+
       fetch("/quiz/hard/store-result", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -127,7 +118,6 @@ function checkCompletion() {
         console.error("Failed to store result:", err);
       })
       .finally(() => {
-        // ✅ Always redirect
         window.location.href = `/quiz/hard/result?time=${encodeURIComponent(timeTaken)}&misses=${missedCount}`;
       });
     }

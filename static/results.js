@@ -1,11 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("📣 easy_results.js is loaded"); // test to confirm script is working
+    console.log("📣 easy_results.js is loaded"); 
   
-    // Get values from localStorage
     const time = localStorage.getItem("easyQuizTime");
     const missed = localStorage.getItem("easyQuizMissed");
   
-    // Display the values if they exist
     if (time) {
       const timeSpan = document.getElementById("result-time");
       if (timeSpan) timeSpan.textContent = time;
@@ -16,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (missedSpan) missedSpan.textContent = missed;
     }
   
-    // Optional: clear the data so it doesn’t persist
     localStorage.removeItem("easyQuizTime");
     localStorage.removeItem("easyQuizMissed");
   });

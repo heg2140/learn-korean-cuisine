@@ -27,7 +27,7 @@ items = [
     {
         "type": "quiz",
         "question": "Which of the following is NOT in Kimchi?",
-        "options": ["Ginger", "Fish sauce", "Korean Chili Paste"],
+        "options": ["Ginger", "Shrimp Paste", "Korean Chili Paste"],
         "answer": "Korean Chili Paste"
     },
     {
@@ -125,7 +125,6 @@ def learn(index):
         item = items[index]
         template = 'learn.html' if item['type'] == 'flashcard' else 'pop-quiz.html'
 
-        # Log the visit
         log = session.get('learning_log', [])
         log.append({
             "index": index,
@@ -135,7 +134,6 @@ def learn(index):
         })
         session['learning_log'] = log
 
-        # Defaults
         selected = None
         is_correct = None
 
@@ -177,9 +175,8 @@ def pop_quiz_result(index):
     selected = request.form.get("answer")
     correct = items[index]["answer"]
 
-    # 🚫 Don't store anything if nothing was selected
     if not selected:
-        # Just re-render the page without logging or session writing
+
         return render_template(
             'pop-quiz.html',
             item=items[index],
@@ -193,12 +190,10 @@ def pop_quiz_result(index):
     is_correct = selected == correct
     is_last = index == len(items) - 1
 
-    # ✅ Only now: store selected answer
     answers = session.get('quiz_answers', {})
     answers[str(index)] = selected
     session['quiz_answers'] = answers
 
-    # ✅ Only now: store correctness
     results = session.get('quiz_results', {})
     results[str(index)] = is_correct
     session['quiz_results'] = results
@@ -208,7 +203,6 @@ def pop_quiz_result(index):
     submitted.add(str(index))
     session['quiz_submitted'] = list(submitted)
 
-    # ✅ Log it
     if 'quiz_log' not in session:
         session['quiz_log'] = []
 
@@ -237,7 +231,7 @@ def pop_quiz_result(index):
 
 @app.route('/reset-quiz/<int:index>')
 def reset_quiz(index):
-    # Clear specific quiz answer and result
+
     if 'quiz_answers' in session:
         session['quiz_answers'].pop(str(index), None)
     if 'quiz_results' in session:
@@ -253,14 +247,10 @@ def quiz():
 def easy_quiz():
     flashcards = [item for item in items if item["type"] == "flashcard"]
 
-    # Make sure there are at least 5 flashcards
     if len(flashcards) < 5:
         raise ValueError("Not enough flashcards")
-
-    # Sample 5 flashcards
     selected_items = random.sample(flashcards, 5)
 
-    # Shuffle labels and images separately
     labels = selected_items.copy()
     images = selected_items.copy()
     random.shuffle(labels)
@@ -271,7 +261,7 @@ def easy_quiz():
 
 @app.route("/quiz/easy/result")
 def easy_quiz_results():
-    time_left_str = request.args.get("time", "1:00")  # format: "mm:ss"
+    time_left_str = request.args.get("time", "1:00") 
     misses = request.args.get("misses", "0")
 
     try:
@@ -279,7 +269,7 @@ def easy_quiz_results():
         time_left = minutes * 60 + seconds
         time_taken = 60 - time_left
     except ValueError:
-        time_taken = 60  # fallback if something goes wrong
+        time_taken = 60 
 
     return render_template("easy_result.html", time_taken=time_taken, misses=misses)
 
@@ -291,12 +281,11 @@ def easy_quiz_failed():
 
 @app.route('/quiz/easy/result', methods=['POST'])
 def submit_easy_quiz_answer():
-    index = request.form.get("index")  # which question
-    selected = request.form.get("answer")  # what the user picked
-    correct = get_correct_answer(index)  # your function or lookup
+    index = request.form.get("index") 
+    selected = request.form.get("answer")  
+    correct = get_correct_answer(index)  
     is_correct = selected == correct
 
-    # Initialize quiz session log
     if 'easy_quiz_log' not in session:
         session['easy_quiz_log'] = []
 
@@ -308,7 +297,7 @@ def submit_easy_quiz_answer():
         "is_correct": is_correct,
         "timestamp": datetime.datetime.now().isoformat()
     })
-    session['easy_quiz_log'] = log  # reassign to ensure it's saved
+    session['easy_quiz_log'] = log 
 
     logging.debug("[LOGGED] Easy quiz entry: %s", log[-1])
     return redirect(url_for('easy_quiz_result_page'))
@@ -317,13 +306,11 @@ def submit_easy_quiz_answer():
 def log_easy_quiz_answer():
     data = request.get_json()
 
-    # Extract data
     match_id = data.get("match_id")
     source_type = data.get("source_type")
     target_type = data.get("target_type")
     is_correct = data.get("is_correct")
 
-    # Store in session
     if 'easy_quiz_log' not in session:
         session['easy_quiz_log'] = []
 
@@ -335,7 +322,7 @@ def log_easy_quiz_answer():
         "timestamp": datetime.datetime.now().isoformat()
     })
 
-    session.modified = True  # Ensure session updates are saved
+    session.modified = True 
 
     logging.debug("[LOGGED] Easy quiz match: %s", session['easy_quiz_log'][-1])
 
@@ -345,10 +332,10 @@ def log_easy_quiz_answer():
 def store_easy_quiz_result():
     data = request.get_json()
 
-    outcome = data.get("outcome")             # "won" or "failed"
-    time = data.get("time")                   # e.g., "0:43"
-    misses = data.get("misses")               # e.g., 1
-    matches = data.get("matches")             # e.g., 5
+    outcome = data.get("outcome")             
+    time = data.get("time")                   
+    misses = data.get("misses")               
+    matches = data.get("matches")             
 
     session["easy_quiz_outcome"] = outcome
     session["easy_quiz_time"] = time
@@ -365,10 +352,8 @@ def store_easy_quiz_result():
 def medium_quiz():
     flashcards = [item for item in items if item["type"] == "flashcard"]
 
-    # Sample 5 flashcards
     selected_items = random.sample(flashcards, 5)
 
-    # Shuffle labels and images separately
     labels = selected_items.copy()
     ingredients = selected_items.copy()
     random.shuffle(labels)
@@ -378,7 +363,7 @@ def medium_quiz():
 
 @app.route('/quiz/medium/result')
 def medium_quiz_result():
-    time_left_str = request.args.get("time", "1:00")  # format: "mm:ss"
+    time_left_str = request.args.get("time", "1:00")  
     misses = request.args.get("misses", "0")
 
     try:
@@ -386,7 +371,7 @@ def medium_quiz_result():
         time_left = minutes * 60 + seconds
         time_taken = 60 - time_left
     except ValueError:
-        time_taken = 60  # fallback if something goes wrong
+        time_taken = 60  
 
     return render_template("medium_result.html", time_taken=time_taken, misses=misses)
 
@@ -398,12 +383,11 @@ def medium_quiz_failed():
 
 @app.route('/quiz/medium/result', methods=['POST'])
 def submit_medium_quiz_answer():
-    index = request.form.get("index")  # which question
-    selected = request.form.get("answer")  # what the user picked
-    correct = get_correct_answer(index)  # your function or lookup
+    index = request.form.get("index")  
+    selected = request.form.get("answer")  
+    correct = get_correct_answer(index)  
     is_correct = selected == correct
 
-    # Initialize quiz session log
     if 'medium_quiz_log' not in session:
         session['medium_quiz_log'] = []
 
@@ -415,7 +399,7 @@ def submit_medium_quiz_answer():
         "is_correct": is_correct,
         "timestamp": datetime.datetime.now().isoformat()
     })
-    session['medium_quiz_log'] = log  # reassign to ensure it's saved
+    session['medium_quiz_log'] = log  
 
     logging.debug("[LOGGED] Medium quiz entry: %s", log[-1])
     return redirect(url_for('medium_quiz_result_page'))
@@ -424,13 +408,11 @@ def submit_medium_quiz_answer():
 def log_medium_quiz_answer():
     data = request.get_json()
 
-    # Extract data
     match_id = data.get("match_id")
     source_type = data.get("source_type")
     target_type = data.get("target_type")
     is_correct = data.get("is_correct")
 
-    # Store in session
     if 'medium_quiz_log' not in session:
         session['medium_quiz_log'] = []
 
@@ -442,7 +424,7 @@ def log_medium_quiz_answer():
         "timestamp": datetime.datetime.now().isoformat()
     })
 
-    session.modified = True  # Ensure session updates are saved
+    session.modified = True  
 
     logging.debug("[LOGGED] Medium quiz match: %s", session['medium_quiz_log'][-1])
 
@@ -452,10 +434,10 @@ def log_medium_quiz_answer():
 def store_medium_quiz_result():
     data = request.get_json()
 
-    outcome = data.get("outcome")             # "won" or "failed"
-    time = data.get("time")                   # e.g., "0:43"
-    misses = data.get("misses")               # e.g., 1
-    matches = data.get("matches")             # e.g., 5
+    outcome = data.get("outcome")             
+    time = data.get("time")                  
+    misses = data.get("misses")               
+    matches = data.get("matches")             
 
     session["medium_quiz_outcome"] = outcome
     session["medium_quiz_time"] = time
@@ -478,13 +460,11 @@ def hard_quiz():
     for card in selected:
         match_id = str(uuid.uuid4())
 
-        # Randomly assign roles
         types = ["name", "image", "audio", "ingredients"]
         chosen_types = random.sample(types, 2)
         draggable_type = chosen_types[0]
         dropzone_type = chosen_types[1]
 
-        # Draggable representation
         if draggable_type == "name":
             draggable_content = card["name"]
         elif draggable_type == "image":
@@ -494,7 +474,6 @@ def hard_quiz():
         elif draggable_type == "ingredients":
             draggable_content = card["ingredients"]
 
-        # Dropzone representation
         if dropzone_type == "name":
             dropzone_content = card["name"]
         elif dropzone_type == "image":
@@ -525,7 +504,7 @@ def hard_quiz():
 
 @app.route('/quiz/hard/result')
 def hard_quiz_result():
-    time_left_str = request.args.get("time", "1:00")  # format: "mm:ss"
+    time_left_str = request.args.get("time", "1:00") 
     misses = request.args.get("misses", "0")
 
     try:
@@ -533,7 +512,7 @@ def hard_quiz_result():
         time_left = minutes * 60 + seconds
         time_taken = 60 - time_left
     except ValueError:
-        time_taken = 60  # fallback if something goes wrong
+        time_taken = 60 
     return render_template("hard_result.html", time_taken=time_taken, misses=misses)
 
 @app.route('/quiz/hard/failed')
@@ -544,12 +523,11 @@ def hard_quiz_failed():
 
 @app.route('/quiz/hard/result', methods=['POST'])
 def submit_quiz_answer():
-    index = request.form.get("index")  # which question
-    selected = request.form.get("answer")  # what the user picked
-    correct = get_correct_answer(index)  # your function or lookup
+    index = request.form.get("index")  
+    selected = request.form.get("answer")  
+    correct = get_correct_answer(index) 
     is_correct = selected == correct
 
-    # Initialize quiz session log
     if 'hard_quiz_log' not in session:
         session['hard_quiz_log'] = []
 
@@ -561,7 +539,7 @@ def submit_quiz_answer():
         "is_correct": is_correct,
         "timestamp": datetime.datetime.now().isoformat()
     })
-    session['hard_quiz_log'] = log  # reassign to ensure it's saved
+    session['hard_quiz_log'] = log  
     logging.debug("[LOGGED] Hard quiz entry: %s", log[-1])
     return redirect(url_for('hard_quiz_result_page'))
 
@@ -577,7 +555,6 @@ def log_hard_quiz_answer():
     target_type = data.get("target_type")
     is_correct = data.get("is_correct")
 
-    # Store in session
     if 'hard_quiz_log' not in session:
         session['hard_quiz_log'] = []
 

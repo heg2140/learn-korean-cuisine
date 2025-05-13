@@ -8,7 +8,6 @@
 <div class="learn-flip-card-wrapper">
   <div class="learn-flip-card" onclick="this.classList.toggle('flipped')">
     <div class="learn-flip-inner">
-      <!-- Front of the card -->
       <div class="learn-flip-front">
         <div class="learn-header">
             <h2 class="learn-food-name">{{ item.name }}</h2>
@@ -20,7 +19,6 @@
         </div>
         <img class="learn-food-image" src="{{ item.image }}" alt="{{ item.name }}">
       </div>
-      <!-- Back of the card -->
       <div class="learn-flip-back">
         <h3 class="text-dark">Ingredients</h3>
         <ul class="ingredient-list">

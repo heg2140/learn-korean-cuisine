@@ -3,14 +3,12 @@ let missedCount = 0;
 let draggedItem = null;
 const totalQuestions = document.querySelectorAll('.dropzone').length;
 
-// Handle drag start
 document.querySelectorAll('.draggable').forEach(item => {
     item.addEventListener('dragstart', (e) => {
         draggedItem = e.target;
     });
 });
 
-// Handle drop zones
 document.querySelectorAll('.dropzone').forEach(zone => {
     zone.addEventListener('dragover', (e) => {
         e.preventDefault();
@@ -21,7 +19,6 @@ document.querySelectorAll('.dropzone').forEach(zone => {
         const correctAnswer = zone.dataset.answer;
         const isCorrect = draggedItem.id === correctAnswer;
     
-        // ✅ Log attempt
         fetch("/quiz/easy/log-answer", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -66,7 +63,6 @@ document.querySelectorAll('.dropzone').forEach(zone => {
     });
 });
 
-// Timer setup
 let timeLeft = 60;
 const timerElement = document.getElementById("timer");
 
@@ -79,13 +75,12 @@ function updateTimer() {
         timeLeft--;
     } else {
         clearInterval(timerInterval);
-        endQuiz(); // Call function to handle end of quiz when time is up
+        endQuiz(); 
     }
 }
 
 const timerInterval = setInterval(updateTimer, 1000);
 
-// Function to handle end of quiz
 function endQuiz() {
     const timeTaken = document.getElementById("timer").textContent;
   

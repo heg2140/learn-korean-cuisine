@@ -387,16 +387,16 @@ input[type="radio"] {
 .images {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px; /* spacing between images */
+    gap: 20px; 
     margin-top: 20px;
-    justify-items: center; /* centers images horizontally */
+    justify-items: center; 
 }
 .ingredient-quiz {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px; /* spacing between images */
+    gap: 20px; 
     margin-top: 20px;
-    justify-items: center; /* centers images horizontally */
+    justify-items: center; 
 }
 
 .dropzone img {
@@ -406,15 +406,15 @@ input[type="radio"] {
 }
 
 .dropzone.matched {
-    border: 3px solid #4CAF50; /* green border */
+    border: 3px solid #4CAF50; 
     background-color: white;
 }
 
 .draggable.matched {
-    background-color: #4CAF50; /* green background */
+    background-color: #4CAF50; 
     color: white;
     border: none;
-    pointer-events: none; /* optional: prevent further dragging */
+    pointer-events: none; 
 }
 
 .match-nested {
